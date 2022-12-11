@@ -6,6 +6,7 @@ const morgan = require('morgan');
 
 const connectDB = require('./config/db');
 const homeRoutes = require('./routes/home');
+const {setStatics} = require('./utils/statics');
 
 // congif env
 dotEnv.config({ path: './config/config.env' });
@@ -26,7 +27,7 @@ app.set('view engine', 'ejs');
 app.set('views', 'views');
 
 // Static
-app.use(express.static(path.join(__dirname, 'public')));
+setStatics(app);
 
 // Routes
 app.use(homeRoutes);
