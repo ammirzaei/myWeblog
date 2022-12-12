@@ -1,6 +1,7 @@
 const path = require('path');
 
 const express = require('express');
+const expressLayout = require('express-ejs-layouts');
 const dotEnv = require('dotenv');
 const morgan = require('morgan');
 
@@ -23,8 +24,10 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // View engine
+app.use(expressLayout); // use Layouts
 app.set('view engine', 'ejs');
 app.set('views', 'views');
+app.set('layout','./layouts/mainLayout');
 
 // Static
 setStatics(app);
