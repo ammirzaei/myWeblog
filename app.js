@@ -7,9 +7,10 @@ const morgan = require('morgan');
 
 const connectDB = require('./config/db');
 const homeRoutes = require('./routes/home');
+const dashboardRoutes = require('./routes/dashboard');
 const {setStatics} = require('./utils/statics');
 
-// congif env
+// config env
 dotEnv.config({ path: './config/config.env' });
 
 // Database Connection
@@ -24,7 +25,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // View engine
-app.use(expressLayout); // use Layouts
+app.use(expressLayout   ); // use Layouts
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.set('layout','./layouts/mainLayout');
@@ -34,6 +35,7 @@ setStatics(app);
 
 // Routes
 app.use(homeRoutes);
+app.use('/dashboard',dashboardRoutes)
 
 // app Run
 app.listen(process.env.PORT, () => { console.log(`app is Running in ${process.env.NODE_ENV}.`) });

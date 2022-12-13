@@ -2,10 +2,13 @@ const { Router } = require('express');
 
 const router = new Router();
 
-// Routes
+//// Routes
+
+// Home Page
 router.get('/', (req, res) => {
     res.render('index', {
-        pageTitle: 'وبلاگ'
+        pageTitle: 'وبلاگ',
+        path : '/'
     });
 });
 
