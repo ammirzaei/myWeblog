@@ -11,3 +11,8 @@ body {
     font-family: "BYekan" !important;
     background-color: aliceblue !important;
 }
+
+.starter-template {
+    padding: 3rem 1.5rem;
+    padding-top: 4rem;
+  }
