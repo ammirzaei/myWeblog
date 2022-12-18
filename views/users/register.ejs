@@ -1,0 +1,50 @@
+<form class="form-signin text-center" action="/register" method="post">
+    <img class="mb-4" src="/img/blogger.png" alt="" width="72" height="72" />
+    <h1 class="h3 mb-3 font-weight-normal">ثبت نام کاربر</h1>
+    <label for="inputFullName" class="sr-only">نام و نام خانوادگی</label>
+    <input
+      type="text"
+      name="fullName"
+      id="inputFullName"
+      class="form-control mb-2"
+      placeholder="نام و نام خانوادگی"
+      required
+      autofocus
+    />
+    <label for="inputEmail" class="sr-only">ایمیل</label>
+    <input
+      type="email"
+      name="email"
+      id="inputEmail"
+      class="form-control mb-2"
+      placeholder="ایمیل"
+      required
+      autofocus
+    />
+    <label for="inputPassword" class="sr-only">رمز عبور</label>
+    <input
+      type="password"
+      name="password"
+      id="inputPassword"
+      class="form-control mb-2"
+      placeholder="رمز عبور"
+      required
+    />
+    <label for="inputRePassword" class="sr-only">تکرار رمز عبور</label>
+    <input
+      type="password"
+      name="repassword"
+      id="inputRePassword"
+      class="form-control mb-2" 
+      placeholder="تکرار رمز عبور"
+      required
+    />
+    <div class="checkbox mb-3">
+      <label>
+        <!-- <input type="checkbox" value="remember-me" /> مرا به خاطر بسپار -->
+        <a href="/login">اکانت کاربری دارم</a>
+      </label>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">ثبت نام</button>
+  </form>
+  

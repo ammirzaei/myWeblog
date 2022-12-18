@@ -5,9 +5,7 @@ const dotEnv = require('dotenv');
 const morgan = require('morgan');
 
 const connectDB = require('./config/db');
-const homeRoutes = require('./routes/home');
-const dashboardRoutes = require('./routes/dashboard');
-const {setStatics} = require('./utils/statics');
+const { setStatics } = require('./utils/statics');
 
 // config env
 dotEnv.config({ path: './config/config.env' });
@@ -23,18 +21,22 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
+// config body-parser
+app.use(express.urlencoded({ extended: false }));
+
 // View engine
 app.use(expressLayout); // use Layouts
 app.set('view engine', 'ejs');
 app.set('views', 'views');
-app.set('layout','./layouts/mainLayout');
+app.set('layout', './layouts/mainLayout');
 
 // Static
 setStatics(app);
 
 // Routes
-app.use(homeRoutes);
-app.use('/dashboard',dashboardRoutes)
+app.use('/dashboard', require('./routes/dashboard'));
+app.use(require('./routes/users'));
+app.use('/', require('./routes/home'));
 
 // app Run
 app.listen(process.env.PORT, () => { console.log(`app is Running in ${process.env.NODE_ENV}.`) });

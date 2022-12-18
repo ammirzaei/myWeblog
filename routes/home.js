@@ -6,9 +6,18 @@ const router = new Router();
 
 // Home Page
 router.get('/', (req, res) => {
-    res.render('index', {
+    res.render('home/index', {
         pageTitle: 'وبلاگ',
-        path : '/'
+        path: '/'
+    });
+});
+
+// NotFound Page
+router.use((req, res) => {
+    res.status(404).render('home/notFound', {
+        pageTitle: "خطای 404",
+        path : '',
+        layout: false
     });
 });
 

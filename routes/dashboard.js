@@ -10,12 +10,5 @@ router.get('/',(req,res)=>{
         layout : './layouts/dashboardlayout'
     });
 });
-// Login Page
-router.get('/login',(req,res)=>{
-    res.render('dashboards/login',{
-        pageTitle : 'صفحه ورود',
-        path : '/login'
-    })
-});
 
 module.exports = router;
