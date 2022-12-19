@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'نام کامل اجباری است'],
         trim: true,
-        minlength: [10, 'حداقل باید 10 کاراکتر وارد کنید'],
+        minlength: [6, 'حداقل باید 6 کاراکتر وارد کنید'],
         maxLength: [150, 'حداکثر باید 150 کاراکتر وارد کنید']
     },
     email: {
