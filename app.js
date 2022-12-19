@@ -34,9 +34,9 @@ app.set('layout', './layouts/mainLayout');
 setStatics(app);
 
 // Routes
-app.use('/dashboard', require('./routes/dashboard'));
-app.use(require('./routes/users'));
-app.use('/', require('./routes/home'));
+app.use('/dashboard', require('./routes/dashboardRoute'));
+app.use(require('./routes/userRoute'));
+app.use('/', require('./routes/homeRoute'));
 
 // app Run
 app.listen(process.env.PORT, () => { console.log(`app is Running in ${process.env.NODE_ENV}.`) });

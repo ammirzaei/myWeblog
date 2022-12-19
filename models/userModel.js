@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const { registerSchema } = require('./schema/usersSchema');
+
 const userSchema = new mongoose.Schema({
     fullName: {
         type: String,
@@ -24,5 +26,9 @@ const userSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+userSchema.statics.userValidation = function (body) {
+    return registerSchema.validate(body, { abortEarly: false });
+};
 
 module.exports = mongoose.model('user', userSchema);
