@@ -7,39 +7,55 @@
       type="text"
       name="fullName"
       id="inputFullName"
-      class="form-control mb-2"
+      class="form-control mb-1"
       placeholder="نام و نام خانوادگی"
       required
       autofocus
+      aria-describedby="fullNameErr"
     />
+    <% if(typeof errors !== 'undefined') {%>
+      <small id="fullNameErr" class="form-text text-danger text-left"><%= errors.find(e=>e.field == 'fullName')  ? errors.find(e=>e.field == 'fullName').message : '' %> </small>
+      <% } %>  
     <label for="inputEmail" class="sr-only">ایمیل</label>
     <input
       type="email"
       name="email"
       id="inputEmail"
-      class="form-control mb-2"
+      class="form-control mb-1"
       placeholder="ایمیل"
-      required
+      aria-describedby="emailErr"
+      
       autofocus
     />
+    <% if(typeof errors !== 'undefined'){ %>
+      <small id="emailErr" class="form-text text-danger text-left"><%= errors.find(e=>e.field == 'email')  ? errors.find(e=>e.field == 'email').message : '' %> </small>
+    <% } %> 
     <label for="inputPassword" class="sr-only">رمز عبور</label>
     <input
       type="password"
       name="password"
       id="inputPassword"
-      class="form-control mb-2"
+      class="form-control mb-1"
+      aria-describedby="passwordErr"
       placeholder="رمز عبور"
       required
     />
+    <% if(typeof errors !== 'undefined'){ %>
+      <small id="passwordErr" class="form-text text-danger text-left"><%= errors.find(e=>e.field == 'password')  ? errors.find(e=>e.field == 'password').message : '' %> </small>
+    <% } %> 
     <label for="inputRePassword" class="sr-only">تکرار رمز عبور</label>
     <input
       type="password"
       name="repassword"
       id="inputRePassword"
-      class="form-control mb-2" 
+      class="form-control mb-1" 
       placeholder="تکرار رمز عبور"
+      aria-describedby="repasswordErr"
       required
     />
+    <% if(typeof errors !== 'undefined'){ %>
+      <small id="repasswordErr" class="form-text text-danger text-left"><%= errors.find(e=>e.field == 'repassword')  ? errors.find(e=>e.field == 'repassword').message : '' %> </small>
+    <% } %> 
     <div class="checkbox mb-3">
       <label>
         <!-- <input type="checkbox" value="remember-me" /> مرا به خاطر بسپار -->
