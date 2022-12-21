@@ -3,6 +3,8 @@ const express = require('express');
 const expressLayout = require('express-ejs-layouts');
 const dotEnv = require('dotenv');
 const morgan = require('morgan');
+const flash = require('connect-flash');
+const session = require('express-session');
 
 const connectDB = require('./config/db');
 const { setStatics } = require('./utils/statics');
@@ -23,6 +25,19 @@ if (process.env.NODE_ENV === 'development') {
 
 // config body-parser
 app.use(express.urlencoded({ extended: false }));
+
+// Session
+app.use(session({
+    secret: 'secret',
+    cookie: {
+        maxAge: 5000
+    },
+    resave: false,
+    saveUninitialized: false
+}));
+
+// Flash
+app.use(flash()); // req.flash
 
 // View engine
 app.use(expressLayout); // use Layouts

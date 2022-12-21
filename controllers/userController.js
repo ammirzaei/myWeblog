@@ -7,7 +7,8 @@ module.exports.getLogin = (req, res) => {
     res.render('users/login', {
         pageTitle: 'صفحه ورود',
         path: '/login',
-        layout: './layouts/usersLayout'
+        layout: './layouts/usersLayout',
+        message : req.flash('Success_Register')
     });
 }
 // Register -- GET
@@ -47,6 +48,8 @@ module.exports.postRegister = async (req, res) => {
             email,
             password: hash
         });
+
+        req.flash('Success_Register','ثبت نام شما با موفقیت انجام شد');
         res.redirect('/login');
 
 
