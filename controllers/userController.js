@@ -1,7 +1,9 @@
 const User = require('../models/userModel');
 
+const bcrypt = require('bcrypt');
+
 // Login -- GET
-module.exports.getLogin = (req,res)=>{
+module.exports.getLogin = (req, res) => {
     res.render('users/login', {
         pageTitle: 'صفحه ورود',
         path: '/login',
@@ -20,13 +22,57 @@ module.exports.getRegister = (req, res) => {
 
 // Register -- POST
 module.exports.postRegister = async (req, res) => {
+    const errors = [];
     try {
         await User.userValidation(req.body);
+        const { fullName, email, password } = req.body;
 
-        // database code
+        const user = await User.findOne({ email });
+        if (user) {
+            errors.push({
+                name: 'email',
+                message: 'ایمیل وارد شده تکراری است'
+            });
+            return res.render('users/register', {
+                pageTitle: 'صفحه ثبت نام',
+                path: '/register',
+                layout: './layouts/usersLayout',
+                errors
+            });
+        }
+
+        const hash = await bcrypt.hash(password, 10);
+        await User.create({
+            fullName,
+            email,
+            password: hash
+        });
         res.redirect('/login');
+
+
+        // bcrypt.genSalt(10, (err, salt) => {
+        //     if (err) throw err;
+        //     bcrypt.hash(password, salt, async (err, hash) => {
+        //         if (err) throw err;
+        //         await User.create({
+        //             fullName,
+        //             email,
+        //             password: hash
+        //         });
+        //         res.redirect('/login');
+        //     });
+        // });
+
+        // // database code
+        // const userN = new User({ // instance from user
+        //     fullName : req.body.fullName,
+        //     email : req.body.email,
+        //     password : req.body.password
+        // });
+        // await userN.save().then(()=>{
+        //     res.redirect('/login');
+        // });
     } catch (err) {
-        const errors = [];
         err.inner.forEach(error => {
             errors.push({
                 name: error.path,
