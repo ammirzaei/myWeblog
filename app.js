@@ -5,6 +5,7 @@ const dotEnv = require('dotenv');
 const morgan = require('morgan');
 const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('passport');
 
 const connectDB = require('./config/db');
 const { setStatics } = require('./utils/statics');
@@ -14,6 +15,9 @@ dotEnv.config({ path: './config/config.env' });
 
 // Database Connection
 connectDB();
+
+// passport Configuration
+require('./config/passport');
 
 // initialize app
 const app = new express();
@@ -30,11 +34,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(session({
     secret: 'secret',
     cookie: {
-        maxAge: 5000
+        maxAge: 86400000
     },
     resave: false,
     saveUninitialized: false
 }));
+
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Flash
 app.use(flash()); // req.flash

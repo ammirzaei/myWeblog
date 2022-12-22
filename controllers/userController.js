@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 
 const bcrypt = require('bcrypt');
+const passport = require('passport');
 
 // Login -- GET
 module.exports.getLogin = (req, res) => {
@@ -8,9 +9,20 @@ module.exports.getLogin = (req, res) => {
         pageTitle: 'صفحه ورود',
         path: '/login',
         layout: './layouts/usersLayout',
-        message : req.flash('Success_Register')
+        message: req.flash('Success_Register'),
+        error : req.flash('error')
     });
 }
+
+// Login Handle -- POST
+module.exports.handleLogin = (req, res, next) => {
+    passport.authenticate('local', {
+        successRedirect: '/dashboard',
+        failureRedirect: '/login',
+        failureFlash: true
+    })(req, res, next);
+};
+
 // Register -- GET
 module.exports.getRegister = (req, res) => {
     res.render('users/register', {
@@ -49,7 +61,7 @@ module.exports.postRegister = async (req, res) => {
             password: hash
         });
 
-        req.flash('Success_Register','ثبت نام شما با موفقیت انجام شد');
+        req.flash('Success_Register', 'ثبت نام شما با موفقیت انجام شد');
         res.redirect('/login');
 
 

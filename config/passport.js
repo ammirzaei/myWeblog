@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 const User = require('../models/userModel');
 
-passport.use(new Strategy({ 'usernameField': 'email' }, async (email, password, done) => {
+passport.use(new Strategy({ usernameField : 'email' }, async (email, password, done) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
@@ -25,11 +25,11 @@ passport.use(new Strategy({ 'usernameField': 'email' }, async (email, password, 
 }));
 
 passport.serializeUser((user, done) => {
-    return done(null, user);
+     done(null, user);
 });
 
 passport.deserializeUser((id, done) => {
     User.findById(id, (err, user) => {
-        return done(err, user);
-    })
+         done(err, user);
+    });
 });
