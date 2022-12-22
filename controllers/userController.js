@@ -17,11 +17,22 @@ module.exports.getLogin = (req, res) => {
 // Login Handle -- POST
 module.exports.handleLogin = (req, res, next) => {
     passport.authenticate('local', {
-        successRedirect: '/dashboard',
+        // successRedirect: '/dashboard',
         failureRedirect: '/login',
         failureFlash: true
     })(req, res, next);
 };
+
+// RememberMe Handle -- POST
+exports.handleRememberMe = (req, res) => {
+    if (req.body.remember) {
+        req.session.cookie.originalMaxAge = (3600 * 1000) * 24 * 7; // 7 day
+    } else {
+        req.session.cookie.expire = null;
+    }
+
+    res.redirect('/dashboard');
+}
 
 // Logout Handle -- GET
 module.exports.handleLogout = (req, res) => {

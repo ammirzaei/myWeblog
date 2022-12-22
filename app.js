@@ -1,11 +1,13 @@
 
 const express = require('express');
 const expressLayout = require('express-ejs-layouts');
+const mongoose = require('mongoose');
 const dotEnv = require('dotenv');
 const morgan = require('morgan');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
+const MongoStore = require('connect-mongo');
 
 const connectDB = require('./config/db');
 const { setStatics } = require('./utils/statics');
@@ -33,11 +35,12 @@ app.use(express.urlencoded({ extended: false }));
 // Session
 app.use(session({
     secret: 'secret',
-    cookie: {
-        maxAge: 86400000
-    },
+    // cookie: {
+    //     maxAge: null
+    // },
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store : MongoStore.create({mongoUrl : process.env.MONGO_URI }) // remember me
 }));
 
 // Passport
@@ -62,4 +65,6 @@ app.use(require('./routes/userRoute'));
 app.use('/', require('./routes/homeRoute'));
 
 // app Run
-app.listen(process.env.PORT, () => { console.log(`app is Running in ${process.env.NODE_ENV}.`) });
+app.listen(process.env.PORT, () => { 
+    console.log(`app is Running in ${process.env.NODE_ENV}.`);
+});

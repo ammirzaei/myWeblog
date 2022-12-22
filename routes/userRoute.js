@@ -9,7 +9,7 @@ const router = new Router();
 router.get('/login', userController.getLogin);
 
 // Login Handle
-router.post('/login', userController.handleLogin);
+router.post('/login', userController.handleLogin, userController.handleRememberMe);
 
 // Logout Handle
 router.get('/logout', authenticated, userController.handleLogout);
