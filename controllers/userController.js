@@ -10,7 +10,7 @@ module.exports.getLogin = (req, res) => {
         path: '/login',
         layout: './layouts/usersLayout',
         message: req.flash('Success_Register'),
-        error : req.flash('error')
+        error: req.flash('error')
     });
 }
 
@@ -22,6 +22,14 @@ module.exports.handleLogin = (req, res, next) => {
         failureFlash: true
     })(req, res, next);
 };
+
+// Logout Handle -- GET
+module.exports.handleLogout = (req, res) => {
+    req.logout((err) => {
+        if (err) console.log(err);
+        res.redirect('/');
+    });
+}
 
 // Register -- GET
 module.exports.getRegister = (req, res) => {

@@ -3,6 +3,6 @@ exports.authenticated = (req, res, next) => {
         return next();
     }
 
-    req.flash('error','ابتدا با حساب خود وارد شوید')
+    req.flash('error','ابتدا باید با حساب خود وارد شوید')
     res.redirect('/login');
 }
