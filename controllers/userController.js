@@ -73,11 +73,11 @@ module.exports.postRegister = async (req, res) => {
             });
         }
 
-        const hash = await bcrypt.hash(password, 10);
+        // const hash = await bcrypt.hash(password, 10);
         await User.create({
             fullName,
             email,
-            password: hash
+            password
         });
 
         req.flash('Success_Register', 'ثبت نام شما با موفقیت انجام شد');

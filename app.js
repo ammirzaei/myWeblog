@@ -8,6 +8,7 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require('passport');
 const MongoStore = require('connect-mongo');
+const debug = require('debug')('weblog');
 
 const connectDB = require('./config/db');
 const { setStatics } = require('./utils/statics');
@@ -66,5 +67,5 @@ app.use('/', require('./routes/homeRoute'));
 
 // app Run
 app.listen(process.env.PORT, () => { 
-    console.log(`app is Running in ${process.env.NODE_ENV}.`);
+    debug(`app is Running in ${process.env.NODE_ENV}`)
 });

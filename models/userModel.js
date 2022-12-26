@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const { registerSchema } = require('./schema/usersSchema');
 
@@ -30,5 +31,18 @@ const userSchema = new mongoose.Schema({
 userSchema.statics.userValidation = function (body) {
     return registerSchema.validate(body, { abortEarly: false });
 };
+
+userSchema.pre('save', async function (next) {
+    const user = this;
+    if (!user.isModified('password')) return next();
+
+    const hash = await bcrypt.hash(user.password, 10);
+    user.password = hash;
+    console.log('pre');
+    next();
+});
+userSchema.post('save', function (next){
+    console.log('post');
+});
 
 module.exports = mongoose.model('user', userSchema);
