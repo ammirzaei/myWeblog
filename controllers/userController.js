@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 
-const bcrypt = require('bcrypt');
+const fetch = require('node-fetch');
 const passport = require('passport');
 
 // Login -- GET
@@ -15,13 +15,39 @@ module.exports.getLogin = (req, res) => {
 }
 
 // Login Handle -- POST
-module.exports.handleLogin = (req, res, next) => {
-    passport.authenticate('local', {
-        // successRedirect: '/dashboard',
-        failureRedirect: '/login',
-        failureFlash: true
-    })(req, res, next);
+module.exports.handleLogin = async (req, res, next) => {
+    const resRecaptcha = req.body['g-recaptcha-response'];
+
+    if (!resRecaptcha) {
+        req.flash('error', 'CAPTCHA را تایید کنید');
+        return res.redirect('/login');
+    }
+
+    if (reChaptcha(resRecaptcha, req.connection.remoteAddress)) {
+        passport.authenticate('local', {
+            failureRedirect: '/login',
+            failureFlash: true
+        })(req, res, next);
+    } else {
+        req.flash('error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
+        res.redirect('/login');
+    }
 };
+
+// Get response in google recaptcha
+async function reChaptcha(resRecaptcha, remoteIp) {
+    const verify = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${resRecaptcha}&remoteip=${remoteIp}`;
+
+    const response = await fetch(verify, {
+        method: 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        }
+    });
+    const resJson = await response.json();
+    return resJson.success;
+}
 
 // RememberMe Handle -- POST
 exports.handleRememberMe = (req, res) => {

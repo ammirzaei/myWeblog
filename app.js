@@ -35,6 +35,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // config body-parser
 app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Session
 app.use(session({
