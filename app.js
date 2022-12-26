@@ -12,6 +12,7 @@ const debug = require('debug')('weblog');
 
 const connectDB = require('./config/db');
 const { setStatics } = require('./utils/statics');
+const winston = require('./config/winston');
 
 // config env
 dotEnv.config({ path: './config/config.env' });
@@ -25,9 +26,11 @@ require('./config/passport');
 // initialize app
 const app = new express();
 
-// Logger
+// Morgan Logger
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
+    app.use(morgan('combined', {
+        stream: winston.stream
+    }));
 }
 
 // config body-parser
@@ -41,7 +44,7 @@ app.use(session({
     // },
     resave: false,
     saveUninitialized: false,
-    store : MongoStore.create({mongoUrl : process.env.MONGO_URI }) // remember me
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }) // remember me
 }));
 
 // Passport
@@ -66,6 +69,6 @@ app.use(require('./routes/userRoute'));
 app.use('/', require('./routes/homeRoute'));
 
 // app Run
-app.listen(process.env.PORT, () => { 
+app.listen(process.env.PORT, () => {
     debug(`app is Running in ${process.env.NODE_ENV}`)
 });
