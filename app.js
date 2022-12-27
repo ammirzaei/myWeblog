@@ -65,7 +65,7 @@ app.set('layout', './layouts/mainLayout');
 setStatics(app);
 
 // Routes
-app.use('/dashboard', require('./routes/dashboardRoute'));
+app.use('/dashboard', require('./routes/adminRoute'));
 app.use(require('./routes/userRoute'));
 app.use('/', require('./routes/homeRoute'));
 

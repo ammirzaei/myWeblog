@@ -5,6 +5,9 @@ const passport = require('passport');
 
 // Login -- GET
 module.exports.getLogin = (req, res) => {
+    if(req.isAuthenticated())
+        return res.redirect('/');
+
     res.render('users/login', {
         pageTitle: 'صفحه ورود',
         path: '/login',
