@@ -12,6 +12,7 @@ const debug = require('debug')('weblog');
 
 const connectDB = require('./config/db');
 const { setStatics } = require('./utils/statics');
+const { setRoutes } = require('./utils/routes');
 const winston = require('./config/winston');
 
 // config env
@@ -65,9 +66,7 @@ app.set('layout', './layouts/mainLayout');
 setStatics(app);
 
 // Routes
-app.use('/dashboard', require('./routes/adminRoute'));
-app.use(require('./routes/userRoute'));
-app.use('/', require('./routes/homeRoute'));
+setRoutes(app);
 
 // app Run
 app.listen(process.env.PORT, () => {
