@@ -77,7 +77,7 @@ module.exports.getRegister = (req, res) => {
         pageTitle: 'صفحه ثبت نام',
         path: '/register',
         layout: './layouts/usersLayout',
-        errors: undefined
+        errors: []
     });
 }
 

@@ -13,9 +13,7 @@
       autofocus
       aria-describedby="fullNameErr"
     />
-    <% if(typeof errors !== 'undefined') {%>
       <small id="fullNameErr" class="form-text text-danger text-left"><%= errors.find(e=>e.name == 'fullName')  ? errors.find(e=>e.name == 'fullName').message : '' %> </small>
-      <% } %>  
     <label for="inputEmail" class="sr-only">ایمیل</label>
     <input
       type="email"
@@ -27,9 +25,7 @@
       required
       autofocus
     />
-    <% if(typeof errors !== 'undefined'){ %>
       <small id="emailErr" class="form-text text-danger text-left"><%= errors.find(e=>e.name == 'email')  ? errors.find(e=>e.name == 'email').message : '' %> </small>
-    <% } %> 
     <label for="inputPassword" class="sr-only">رمز عبور</label>
     <input
       type="password"
@@ -40,9 +36,7 @@
       placeholder="رمز عبور"
       required
     />
-    <% if(typeof errors !== 'undefined'){ %>
       <small id="passwordErr" class="form-text text-danger text-left"><%= errors.find(e=>e.name == 'password')  ? errors.find(e=>e.name == 'password').message : '' %> </small>
-    <% } %> 
     <label for="inputRePassword" class="sr-only">تکرار رمز عبور</label>
     <input
       type="password"
@@ -53,9 +47,7 @@
       aria-describedby="repasswordErr"
       required
     />
-    <% if(typeof errors !== 'undefined'){ %>
       <small id="repasswordErr" class="form-text text-danger text-left"><%= errors.find(e=>e.name == 'repassword')  ? errors.find(e=>e.name == 'repassword').message : '' %> </small>
-    <% } %> 
     <div class="checkbox mb-3">
       <label>
         <a href="/login">اکانت کاربری دارم</a>
