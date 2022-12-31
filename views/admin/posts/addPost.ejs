@@ -1,6 +1,6 @@
 <h3 class="mt-2 text-center">ساخت پست جدید</h3>
 <div class="d-flex align-items-center justify-content-center">
-    <form action="/dashboard/add-post" class="w-50" method="POST">
+    <form action="/dashboard/add-post" class="w-50" method="POST" autocomplete="on">
         <div class="form-group">
             <label for="title">عنوان پست</label>
             <input
@@ -9,19 +9,22 @@
                 name="title"
                 id="title"
             />
+            <small id="title" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'title') ? errors.find(e=>e.name === 'title').message: '' %> </small>
         </div>
 
         <div class="form-group">
-            <label for="status">وضعیت</label>
+            <label for="status">وضعیت پست</label>
             <select name="status" class="form-control w-25" id="status">
                 <option value="عمومی" selected>عمومی</option>
                 <option value="خصوصی">خصوصی</option>
             </select>
+            <small id="status" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'status') ? errors.find(e=>e.name === 'status').message: '' %> </small>
         </div>
 
         <div class="form-group">
-            <h5>متن اصلی پست</h5>
+            <label for="body">متن پست</label>
             <textarea name="body" class="form-control" id="body"></textarea>
+            <small id="body" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'body') ? errors.find(e=>e.name === 'body').message: '' %> </small>
         </div>
 
         <div class="row">
