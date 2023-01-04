@@ -28,6 +28,7 @@
     "express-ejs-layouts": "^2.5.1",
     "express-session": "^1.17.3",
     "font-awesome": "^4.7.0",
+    "jalali-moment": "^3.3.11",
     "jquery": "^3.6.2",
     "mongoose": "^6.8.0",
     "node-fetch": "^2.6.7",
