@@ -2,18 +2,22 @@ const User = require('../models/userModel');
 
 const fetch = require('node-fetch');
 const passport = require('passport');
+const urlLocal = require('url-local');
 
 // Login -- GET
 module.exports.getLogin = (req, res) => {
-    if(req.isAuthenticated())
+    if (req.isAuthenticated())
         return res.redirect('/');
+
+    // console.log(req.headers.referer);
 
     res.render('users/login', {
         pageTitle: 'صفحه ورود',
         path: '/login',
         layout: './layouts/usersLayout',
         message: req.flash('Success_Register'),
-        error: req.flash('error')
+        error: req.flash('error'),
+        redirect: req.query.redirect
     });
 }
 
@@ -25,11 +29,12 @@ module.exports.handleLogin = async (req, res, next) => {
         req.flash('error', 'CAPTCHA را تایید کنید');
         return res.redirect('/login');
     }
-
     if (reChaptcha(resRecaptcha, req.connection.remoteAddress)) {
+        const urlRedirect = req.body.redirect.trim();
         passport.authenticate('local', {
             failureRedirect: '/login',
-            failureFlash: true
+            failureFlash: true,
+            successRedirect: urlLocal(urlRedirect) ? urlRedirect : ''
         })(req, res, next);
     } else {
         req.flash('error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
