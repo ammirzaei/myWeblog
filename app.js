@@ -61,6 +61,7 @@ app.use(expressLayout); // use Layouts
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.set('layout', './layouts/mainLayout');
+app.set('layout extractScripts', true); // use script to end layout!
 
 // Static
 setStatics(app);

@@ -1,6 +1,6 @@
 <h3 class="mt-2 text-center">ساخت پست جدید</h3>
 <div class="d-flex align-items-center justify-content-center">
-    <form action="/dashboard/add-post" class="w-50" method="POST" autocomplete="on">
+    <form action="/dashboard/add-post" method="POST" autocomplete="on">
         <div class="form-group">
             <label for="title">عنوان پست</label>
             <input
@@ -33,3 +33,9 @@
         </div>
     </form>
 </div>
+<script src="//cdn.ckeditor.com/4.20.1/full/ckeditor.js"></script>
+<script>
+   CKEDITOR.replace('body',{
+    language : 'fa'
+   })
+</script>
