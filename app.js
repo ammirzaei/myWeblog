@@ -40,7 +40,7 @@ app.use(express.json());
 
 // Session
 app.use(session({
-    secret: 'secret',
+    secret: process.env.SESSION_SECRET,
     // cookie: {
     //     maxAge: null
     // },
