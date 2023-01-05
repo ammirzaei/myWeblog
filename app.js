@@ -45,6 +45,7 @@ app.use(session({
     //     maxAge: null
     // },
     resave: false,
+    unset : 'destroy',
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }) // remember me
 }));

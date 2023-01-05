@@ -76,6 +76,7 @@ exports.handleRememberMe = (req, res) => {
 
 // Logout Handle -- GET
 module.exports.handleLogout = (req, res) => {
+    req.session = null;
     req.logout((err) => {
         if (err) console.log(err);
         res.redirect('/');
