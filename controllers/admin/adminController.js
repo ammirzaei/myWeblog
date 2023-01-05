@@ -1,5 +1,8 @@
 const Blog = require('../../models/blogModel');
 const { formatDate } = require('../../utils/jalali');
+const { get500 } = require('../errorController');
+
+// Dashboard Page -- GET
 module.exports.getDashboard = async (req, res) => {
     try {
         const blogs = await Blog.find({
@@ -15,6 +18,7 @@ module.exports.getDashboard = async (req, res) => {
         });
     } catch (err) {
         console.log(err);
+        get500(req, res);
     }
 
 }

@@ -1,4 +1,5 @@
 const User = require('../models/userModel');
+const { get500 } = require('./errorController');
 
 const fetch = require('node-fetch');
 const passport = require('passport');
@@ -23,22 +24,27 @@ module.exports.getLogin = (req, res) => {
 
 // Login Handle -- POST
 module.exports.handleLogin = async (req, res, next) => {
-    const resRecaptcha = req.body['g-recaptcha-response'];
+    try {
+        const resRecaptcha = req.body['g-recaptcha-response'];
 
-    if (!resRecaptcha) {
-        req.flash('error', 'CAPTCHA را تایید کنید');
-        return res.redirect('/login');
-    }
-    if (reChaptcha(resRecaptcha, req.connection.remoteAddress)) {
-        const urlRedirect = req.body.redirect.trim();
-        passport.authenticate('local', {
-            failureRedirect: '/login',
-            failureFlash: true,
-            successRedirect: urlLocal(urlRedirect) ? urlRedirect : ''
-        })(req, res, next);
-    } else {
-        req.flash('error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
-        res.redirect('/login');
+        if (!resRecaptcha) {
+            req.flash('error', 'CAPTCHA را تایید کنید');
+            return res.redirect('/login');
+        }
+        if (reChaptcha(resRecaptcha, req.connection.remoteAddress)) {
+            const urlRedirect = req.body.redirect.trim();
+            passport.authenticate('local', {
+                failureRedirect: '/login',
+                failureFlash: true,
+                successRedirect: urlLocal(urlRedirect) ? urlRedirect : ''
+            })(req, res, next);
+        } else {
+            req.flash('error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
+            res.redirect('/login');
+        }
+    } catch (error) {
+        console.log(error);
+        get500(req, res);
     }
 };
 

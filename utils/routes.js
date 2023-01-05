@@ -7,4 +7,7 @@ module.exports.setRoutes = (app) => {
 
     app.use(require('../routes/userRoute'));
     app.use('/', require('../routes/homeRoute'));
+
+    // Handler Errors
+    app.use(require('../routes/errorRoute'))
 }
