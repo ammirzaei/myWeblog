@@ -16,3 +16,7 @@ body {
     padding: 3rem 1.5rem;
     padding-top: 4rem;
   }
+
+.custom-file-input ~ .custom-file-label::after{
+    content: 'انتخاب عکس' !important;
+}

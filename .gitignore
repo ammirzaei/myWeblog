@@ -1,3 +1,6 @@
+# Custom
+public/uploads/img/*
+
 # Logs
 logs
 *.log
