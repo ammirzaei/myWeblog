@@ -1,6 +1,6 @@
-// const path = require('path');
-
 const multer = require('multer');
+const sharp = require('sharp');
+const uuid = require('uuid').v4;
 
 const Blog = require('../../models/blogModel');
 const { formatDate } = require('../../utils/jalali');
@@ -37,18 +37,25 @@ module.exports.uploadImage = (req, res) => {
             fieldSize: 4200000,
             files: 1
         },
-        dest: 'uploads/img/',
-        storage,
+        // dest: 'uploads/img/',
+        // storage,
         fileFilter
     }).single('image');
 
-    upload(req, res, (err) => {
+    upload(req, res, async (err) => {
         // this upload just file exist
         if (err) {
             res.send(err);
         } else {
-            if (req.file)
+            if (req.file) {
+                const fileName = `${uuid()}_${req.file.originalname}`;
+                await sharp(req.file.buffer).jpeg({
+                    quality : 60
+                }).toFile(`./public/uploads/img/${fileName}`)
+                .catch(err => console.log(err));
+
                 res.status(200).send('آپلود عکس موفقیت آمیز بود');
+            }
             else
                 res.send('ابتدا عکسی را انتخاب کنید');
         }
