@@ -1,6 +1,6 @@
-<h3 class="mt-2 text-center">ساخت پست جدید</h3>
+<h3 class="mt-2 text-center">ویرایش پست</h3>
 <div class="d-flex align-items-center justify-content-center">
-    <form action="/dashboard/add-post" method="POST" autocomplete="on">
+    <form action="/dashboard/edit-post/<%= blog.id %>" method="POST" autocomplete="on">
         <div class="form-group">
             <label for="title">عنوان پست</label>
             <input
@@ -8,6 +8,7 @@
                 class="form-control w-50"
                 name="title"
                 id="title"
+                value="<%= blog.title %>"
             />
             <small id="title" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'title') ? errors.find(e=>e.name === 'title').message: '' %> </small>
         </div>
@@ -15,8 +16,8 @@
         <div class="form-group">
             <label for="status">وضعیت پست</label>
             <select name="status" class="form-control w-25" id="status">
-                <option value="عمومی" selected>عمومی</option>
-                <option value="خصوصی">خصوصی</option>
+                <option value="عمومی" <%= blog.status === 'عمومی' ? 'selected' : '' %> >عمومی</option>
+                <option value="خصوصی" <%= blog.status === 'خصوصی' ? 'selected' : '' %>>خصوصی</option>
             </select>
             <small id="status" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'status') ? errors.find(e=>e.name === 'status').message: '' %> </small>
         </div>
@@ -42,12 +43,12 @@
 
         <div class="form-group">
             <label for="body">متن پست</label>
-            <textarea name="body" class="form-control" id="body"></textarea>
+            <textarea name="body" class="form-control" id="body"><%= blog.body %> </textarea>
             <small id="body" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'body') ? errors.find(e=>e.name === 'body').message: '' %> </small>
         </div>
 
         <div class="row">
-            <input type="submit" value="ساخت پست" class="btn btn-success m-2" />
+            <input type="submit" value="ویرایش پست" class="btn btn-primary m-2" />
             <a href="/dashboard" class="btn btn-warning m-2">انصراف</a>
         </div>
     </form>

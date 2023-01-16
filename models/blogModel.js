@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-const { addPostSchema } = require('./schema/PostSchema');
+const { postValidationSchema } = require('./schema/PostSchema');
 
 const blogSchema = new mongoose.Schema({
     title: {
@@ -30,8 +30,8 @@ const blogSchema = new mongoose.Schema({
     }
 });
 
-blogSchema.statics.addPostValidation = function (body) {
-    return addPostSchema.validate(body, { abortEarly: false });
+blogSchema.statics.postValidation = function (body) {
+    return postValidationSchema.validate(body, { abortEarly: false });
 }
 
 module.exports = mongoose.model('blog', blogSchema);
