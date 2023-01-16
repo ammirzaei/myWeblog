@@ -1,11 +1,15 @@
+const path = require('path');
+
 const multer = require('multer');
 const sharp = require('sharp');
-const uuid = require('uuid').v4;
+// const uuid = require('uuid').v4;
+const shortId = require('shortid');
 
 const Blog = require('../../models/blogModel');
 const { formatDate } = require('../../utils/jalali');
 const { get500 } = require('../errorController');
 const { fileFilter, storage } = require('../../utils/multer');
+const rootDir = require('../../utils/rootDir');
 
 
 // Dashboard Page -- GET
@@ -34,7 +38,7 @@ module.exports.uploadImage = (req, res) => {
     // const fileName = uuid() + path.extname(req.file.fileName);
     const upload = multer({
         limits: {
-            fieldSize: 4200000,
+            fileSize: 4200000,
             files: 1
         },
         // dest: 'uploads/img/',
@@ -45,19 +49,23 @@ module.exports.uploadImage = (req, res) => {
     upload(req, res, async (err) => {
         // this upload just file exist
         if (err) {
-            res.send(err);
+            if (err.code === 'LIMIT_FILE_SIZE') { // limit : fileSize
+                return res.status(400).send('حجم عکس باید کمتر از 4 مگابایت باشد');
+            }
+            res.status(400).send(err);
         } else {
             if (req.file) {
-                const fileName = `${uuid()}_${req.file.originalname}`;
+                const fileName = shortId.generate() + path.extname(req.file.originalname);
                 await sharp(req.file.buffer).jpeg({
-                    quality : 60
+                    quality: 60
                 }).toFile(`./public/uploads/img/${fileName}`)
-                .catch(err => console.log(err));
+                    .catch(err => console.log(err));
 
-                res.status(200).send('آپلود عکس موفقیت آمیز بود');
+                const url = `http://localhost:3000/uploads/img/${fileName}`;
+                res.status(200).set('url', url).send('آپلود عکس موفقیت آمیز بود');
             }
             else
-                res.send('ابتدا عکسی را انتخاب کنید');
+                res.status(400).send('ابتدا عکسی را انتخاب کنید');
         }
     })
 }

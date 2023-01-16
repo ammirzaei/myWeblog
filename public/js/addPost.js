@@ -1,13 +1,20 @@
 document.getElementById('btnUpload').addEventListener('click', function () {
     const xhttp = new XMLHttpRequest(); // new instance AJAX request
 
-    let file = document.getElementById('inputUpload').files[0];
+    let file = document.getElementById('inputUpload');
     const imageStatus = document.querySelector('#imageStatus');
     const progressBar = document.querySelector('.progress-bar');
     const progressDiv = document.getElementById('progressDiv');
 
-    xhttp.onreadystatechange = function () {
-        imageStatus.innerHTML = this.responseText;
+    xhttp.onreadystatechange = async function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            imageStatus.innerHTML = this.responseText;
+            if (xhttp.status === 200) {
+                await navigator.clipboard.writeText(this.getResponseHeader('url')); // get url image from headers
+                alert('آدرس عکس با موفقیت کپی شد');
+                file.value = ''; // empty input file
+            }
+        }
     }
 
     xhttp.upload.onprogress = function (e) {
@@ -24,9 +31,9 @@ document.getElementById('btnUpload').addEventListener('click', function () {
 
     xhttp.open('post', '/dashboard/image-upload');
 
-    if (file) {
+    if (file.files[0]) {
         let formData = new FormData();
-        formData.append('image', file);
+        formData.append('image', file.files[0]);
         progressDiv.style.display = 'block';
 
         xhttp.send(formData);
