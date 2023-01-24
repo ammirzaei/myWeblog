@@ -1,7 +1,6 @@
 
 const express = require('express');
 const expressLayout = require('express-ejs-layouts');
-const mongoose = require('mongoose');
 const dotEnv = require('dotenv');
 const morgan = require('morgan');
 const flash = require('connect-flash');

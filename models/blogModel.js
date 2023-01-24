@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const { postValidationSchema } = require('./schema/PostSchema');
 
 const blogSchema = new mongoose.Schema({
