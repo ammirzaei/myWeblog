@@ -6,7 +6,7 @@ const sharp = require('sharp');
 const shortId = require('shortid');
 
 const Blog = require('../../models/blogModel');
-const { formatDate } = require('../../utils/jalali');
+const { formatDateTime } = require('../../utils/jalali');
 const { get500 } = require('../errorController');
 const { fileFilter, storage } = require('../../utils/multer');
 const rootDir = require('../../utils/rootDir');
@@ -40,7 +40,7 @@ module.exports.getDashboard = async (req, res) => {
             layout: './layouts/adminlayout',
             fullName: req.user.fullName,
             blogs,
-            formatDate,
+            formatDateTime,
             pagination
         });
     } catch (err) {
