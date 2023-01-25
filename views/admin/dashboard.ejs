@@ -31,7 +31,7 @@
             <%= blog.status %>
           </span>
         </td>
-        <td><%= formatDate(blog.createdAt) %> </td>
+        <td><%= formatDateTime(blog.createdAt) %> </td>
         <td>
           <a href="/dashboard/edit-post/<%= blog.id %>" class="btn btn-primary btn-sm">ویرایش</a> |
           <a href="#" onclick="confirm('از حذف این پست مطمئن هستید؟') ? location.replace('/dashboard/delete-post/<%= blog.id %>') : ''" class="btn btn-danger btn-sm">حذف</a> 

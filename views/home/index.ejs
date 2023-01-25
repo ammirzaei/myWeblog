@@ -1,5 +1,26 @@
 <div class="starter-template">
-  <div class="alert alert-primary">
-    <h1 class="text-center">وبلاگ ساده من</h1>
+  <div class="row">
+    <% if(blogs.length > 0){ %> 
+      <% for(const blog of blogs) {%>
+        <div class="col-lg-6">
+          <div class="card mb-4">
+            <a href="/blog/<%= blog.id %> "><img class="card-img-top" src="https://dummyimage.com/700x350/dee2e6/6c757d.jpg" alt="<%= blog.title %> "></a>
+            <div class="card-body">
+                <h2 class="card-title h4"><%= blog.title %> </h2>
+                <p class="card-text"><%= blog.shortDescription %> </p>
+                <a class="btn btn-primary" href="/blog/<%= blog.id %> ">ادامه مطالب</a>
+            </div>
+            <div class="card-footer text-muted">
+              پست شده در تاریخ <%= formatDate(blog.createdAt) %> 
+            </div>
+          </div>
+        </div>     
+      <% } %> 
+    <% } else { %>
+      <div class="alert alert-info text-center col-12">
+        <h2>پستی برای نمایش وجود ندارد</h2>
+      </div>  
+    <% } %> 
   </div>
 </div>
+
