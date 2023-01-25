@@ -1,6 +1,6 @@
 <h3 class="mt-2 text-center">ساخت پست جدید</h3>
 <div class="d-flex align-items-center justify-content-center">
-    <form action="/dashboard/add-post" method="POST" autocomplete="on">
+    <form action="/dashboard/add-post" method="POST" autocomplete="on" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title">عنوان پست</label>
             <input
@@ -10,6 +10,20 @@
                 id="title"
             />
             <small id="title" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'title') ? errors.find(e=>e.name === 'title').message: '' %> </small>
+        </div>
+
+        <div class="form-group">
+            <label for="image">عکس پست</label>
+           <div class="custom-file">
+               <input
+                   type="file"
+                   name="image"
+                   id="image"
+                   class="custom-file-input" 
+               />
+            <label for="image" class="custom-file-label">عکس پست را انتخاب کنید</label>
+            <small id="image" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'image.name' || e.name === 'image.size' || e.name === 'image.mimetype') ? errors.find(e=> e.name === 'image.name' || e.name === 'image.size' || e.name === 'image.mimetype').message: '' %> </small>
+           </div>
         </div>
 
         <div class="form-group">
@@ -27,19 +41,7 @@
             <small id="shortDescription" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'shortDescription') ? errors.find(e=>e.name === 'shortDescription').message: '' %> </small>
         </div>
 
-        <!-- <div class="form-group">
-            <label for="image">عکس پست</label>
-           <div class="custom-file">
-               <input
-                   type="file"
-                   name="image"
-                   id="image"
-                   class="custom-file-input" 
-               />
-            <label for="image" class="custom-file-label">عکس پست را انتخاب کنید</label>
-            <small id="image" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'image') ? errors.find(e=>e.name === 'image').message: '' %> </small>
-           </div>
-        </div> -->
+    
 
       <div class="form-group">
         <div class="input-group">

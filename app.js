@@ -8,6 +8,7 @@ const session = require('express-session');
 const passport = require('passport');
 const MongoStore = require('connect-mongo');
 const debug = require('debug')('weblog');
+const fileUpload = require('express-fileupload');
 
 const connectDB = require('./config/db');
 const { setStatics } = require('./utils/statics');
@@ -36,6 +37,9 @@ if (process.env.NODE_ENV === 'development') {
 // config body-parser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+
+// use express-fileUpload
+app.use(fileUpload());  // req.files
 
 // Session
 app.use(session({

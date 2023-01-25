@@ -1,5 +1,11 @@
+const path = require('path');
+
 const Blog = require('../../models/blogModel');
 const { get500, get404 } = require('../errorController');
+const rootDir = require('../../utils/rootDir');
+
+const shortId = require('shortid');
+const sharp = require('sharp');
 
 // Add Post -- GET
 module.exports.getAddPost = (req, res) => {
@@ -14,13 +20,34 @@ module.exports.getAddPost = (req, res) => {
 
 // Add Post Handler -- POST
 module.exports.handleAddPost = async (req, res) => {
+
     try {
+        const image = req.files ? req.files.image : {};
+       
+         req.body.image = image; // added image to the body
+        // req.body = { ...req.body, image };
+
         // check model validation
         await Blog.postValidation(req.body);
+
+        const imageName = shortId.generate() + path.extname(image.name);
+        const imagePath = `${rootDir}/public/uploads/blogs/${imageName}`;
+
+
+        // compress image and saved
+        await sharp(image.data).jpeg({
+            quality: 50
+        }).toFile(imagePath).catch((err) => {
+            if (err) {
+                console.log(err);
+                get500(req, res);
+            }
+        })
 
         // create post
         await Blog.create({
             ...req.body,
+            image: imageName,
             user: req.user.id
         });
 
