@@ -10,7 +10,11 @@
   <body class="container rtl">
     <%- include('../includes/navbar.ejs') %>
     
-    <main role="main" class="container"><%- body %></main>
+    <main role="main" class="container">
+      <div class="starter-template">
+        <%- body %>
+      </div>
+    </main>
     
     <%- include('../includes/footer.ejs') %>
   </body>
