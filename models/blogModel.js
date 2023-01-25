@@ -10,6 +10,13 @@ const blogSchema = new mongoose.Schema({
         minlength: 4,
         maxlength: 150
     },
+    shortDescription: {
+        type: String,
+        required: true,
+        trim: true,
+        minlength: 8,
+        maxlength: 250
+    },
     body: {
         type: String,
         required: true
@@ -19,6 +26,10 @@ const blogSchema = new mongoose.Schema({
         default: 'عمومی',
         enum: ['عمومی', 'خصوصی']
     },
+    // image: {
+    //     type: String,
+    //     required: true
+    // },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'

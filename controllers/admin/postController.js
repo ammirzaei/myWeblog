@@ -83,12 +83,13 @@ module.exports.handleEditPost = async (req, res) => {
         await Blog.postValidation(req.body); // validation with statics method mongoose
 
         if (blog.user == req.user.id) {
-            const { title, status, body } = req.body; // access to the enterd edit blog
+            const { title, status, body, shortDescription } = req.body; // access to the enterd edit blog
 
             // set a new value to the blog
             blog.title = title;
             blog.status = status;
             blog.body = body;
+            blog.shortDescription = shortDescription;
 
             // save new blog to the db
             await blog.save();
@@ -122,7 +123,7 @@ module.exports.getDeletePost = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id); // find blog with param id
 
-        if (blog.user != req.user.id) 
+        if (blog.user != req.user.id)
             return res.redirect('/dashboard');
 
         if (blog) {

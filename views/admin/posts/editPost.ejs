@@ -22,6 +22,12 @@
             <small id="status" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'status') ? errors.find(e=>e.name === 'status').message: '' %> </small>
         </div>
 
+        <div class="form-group">
+            <label for="shortDescription">توضیحات کوتاه پست</label>
+            <textarea name="shortDescription" class="form-control" id="shortDescription" rows="3"><%= blog.shortDescription %> </textarea>
+            <small id="shortDescription" class="form-text text-danger text-left"><%= errors.find(e=> e.name === 'shortDescription') ? errors.find(e=>e.name === 'shortDescription').message: '' %> </small>
+        </div>
+
       <div class="form-group">
         <div class="input-group">
             <div class="input-group-prepend">
