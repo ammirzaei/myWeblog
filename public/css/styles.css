@@ -20,3 +20,10 @@ body {
 .custom-file-input ~ .custom-file-label::after{
     content: 'انتخاب عکس' !important;
 }
+
+.imagePreview{
+    max-width: 200px;
+    max-height: 200px;
+    border-radius: 10px;
+    display: none;
+}
