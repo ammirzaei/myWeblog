@@ -3,7 +3,7 @@
     <% for(const blog of blogs) {%>
       <div class="col-lg-6">
         <div class="card mb-4">
-          <a href="/blog/<%= blog.id %> "><img class="card-img-top" src="/uploads/blogs/<%= blog.image %> " alt="<%= blog.title %> "></a>
+          <a href="/blog/<%= blog.id %> "><img class="card-img-top" src="/uploads/blogs/<%= blog.image %> " alt="<%= blog.title %> " style="height: 400px;"></a>
           <div class="card-body">
               <h2 class="card-title h4"><%= blog.title %> </h2>
               <p class="card-text"><%= blog.shortDescription %> </p>
