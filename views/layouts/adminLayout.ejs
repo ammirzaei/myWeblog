@@ -58,6 +58,12 @@
                   ساخت پست جدید 
                 </a>
               </li>
+              <li class="nav-item mb-2">
+                <a class="nav-link d-flex align-items-center btn btn-outline-secondary" href="#" data-toggle="modal" data-target="#imageUploadModal">
+                  <span class="fa fa-upload mr-3"></span>
+                  آپلود تصویر
+                </a>
+              </li>
               <li class="nav-item">
                 <a class="nav-link" href="#">
                   <span data-feather="file"></span>
@@ -95,6 +101,8 @@
         </main>
       </div>
     </div>
+
+    <%- include('../includes/imageUpload.ejs') %> 
     <%- include('../includes/footer.ejs') %>
     <%- script %> 
   </body>

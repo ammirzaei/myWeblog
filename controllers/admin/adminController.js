@@ -33,7 +33,7 @@ module.exports.getDashboard = async (req, res) => {
             hasPreviousPage: pageId > 1,
             lastPage: Math.ceil(countBlogs / blogPerPage)
         };
-        
+
         res.render('admin/dashboard', {
             pageTitle: 'صفحه داشبورد',
             path: '/dashboard',
@@ -51,38 +51,73 @@ module.exports.getDashboard = async (req, res) => {
 }
 
 // Upload Image
-module.exports.uploadImage = (req, res) => {
-    // const fileName = uuid() + path.extname(req.file.fileName);
-    const upload = multer({
-        limits: {
-            fileSize: 4200000,
-            files: 1
-        },
-        // dest: 'uploads/img/',
-        // storage,
-        fileFilter
-    }).single('image');
+module.exports.uploadImage = async (req, res) => {
+    // // const fileName = uuid() + path.extname(req.file.fileName);
+    // const upload = multer({
+    //     limits: {
+    //         fileSize: 4200000,
+    //         files: 1
+    //     },
+    //     // dest: 'uploads/img/',
+    //     // storage,
+    //     fileFilter
+    // }).single('image');
 
-    upload(req, res, async (err) => {
-        // this upload just file exist
-        if (err) {
-            if (err.code === 'LIMIT_FILE_SIZE') { // limit : fileSize
-                return res.status(400).send('حجم عکس باید کمتر از 4 مگابایت باشد');
+    // upload(req, res, async (err) => {
+    //     // this upload just file exist
+    //     if (err) {
+    //         if (err.code === 'LIMIT_FILE_SIZE') { // limit : fileSize
+    //             return res.status(400).send('حجم عکس باید کمتر از 4 مگابایت باشد');
+    //         }
+    //         res.status(400).send(err);
+    //     } else {
+    //         if (req.file) {
+    //             const fileName = shortId.generate() + path.extname(req.file.originalname);
+    //             await sharp(req.file.buffer).jpeg({
+    //                 quality: 60
+    //             }).toFile(`./public/uploads/img/${fileName}`)
+    //                 .catch(err => console.log(err));
+
+    //             const url = `http://localhost:3000/uploads/img/${fileName}`;
+    //             res.status(200).set('url', url).send('آپلود عکس موفقیت آمیز بود');
+    //         }
+    //         else
+    //             res.status(400).send('ابتدا عکسی را انتخاب کنید');
+    //     }
+    // })
+
+    try {
+        if (req.files) {
+            const image = req.files.imageUpload; // access to the image upload
+
+            // Validation
+            // Size
+            if (image.size > 4200000) {
+                return res.status(400).send('حجم عکس نباید بیشتر از 4 مگابایت باشد');
             }
-            res.status(400).send(err);
+            // Type
+            if (image.mimetype !== 'image/jpeg' && image.mimetype !== 'image/png') {
+                return res.status(400).send('تنها فرمت های JPEG و PNG را میتوانید آپلود کنید');
+            }
+
+            const imageName = shortId.generate() + path.extname(image.name);
+            const imagePath = `${rootDir}/public/uploads/img/${imageName}`;
+
+            // compressed and saved image to the folder
+            await sharp(image.data).jpeg({
+                quality: 50
+            }).toFile(imagePath).catch((err) => {
+                res.status(400).send('در فرایند ذخیره عکس مشکلی رخ داد');
+            });
+
+            // create url image for send on header 
+            const url = `http://localhost:3000/uploads/img/${imageName}`;
+
+            res.status(200).set('url', url).send('آپلود عکس با موفقیت انجام شد');
         } else {
-            if (req.file) {
-                const fileName = shortId.generate() + path.extname(req.file.originalname);
-                await sharp(req.file.buffer).jpeg({
-                    quality: 60
-                }).toFile(`./public/uploads/img/${fileName}`)
-                    .catch(err => console.log(err));
-
-                const url = `http://localhost:3000/uploads/img/${fileName}`;
-                res.status(200).set('url', url).send('آپلود عکس موفقیت آمیز بود');
-            }
-            else
-                res.status(400).send('ابتدا عکسی را انتخاب کنید');
+            res.status(400).send('ابتدا عکسی انتخاب کنید');
         }
-    })
+    } catch (err) {
+        res.status(400).send('در فرایند آپلود مشکلی رخ داد');
+    }
 }
