@@ -121,6 +121,8 @@ module.exports.postRegister = async (req, res) => {
             password
         });
 
+        // send Email for welcome
+
         req.flash('Success_Register', 'ثبت نام شما با موفقیت انجام شد');
         res.redirect('/login');
 
