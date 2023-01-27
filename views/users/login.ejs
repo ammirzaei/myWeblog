@@ -1,7 +1,7 @@
 <form class="form-signin text-center" action="/login" method="post">
   <img class="mb-4" src="/img/blogger.png" alt="" width="72" height="72" />
   <h1 class="h3 mb-3 font-weight-normal">ورود</h1>
-  <%- include('../includes/loginMessages.ejs') %> 
+  <%- include('../includes/userMessages.ejs') %> 
   <label for="inputEmail" class="sr-only">ایمیل</label>
   <input
     type="email"
@@ -28,5 +28,8 @@
     </label>
   </div>
   <div class="g-recaptcha mb-3" data-sitekey="6LeqpqkjAAAAAG_VvMDHr_kIdEK8kR0DcNUImDPy"></div>
-  <button class="btn btn-lg btn-primary btn-block" type="submit">ورود</button>
+  <a href="/register">ثبت نام نکردم</a>
+  <br>
+  <a href="/forget-password">رمز عبورم را فراموش کردم</a>
+  <button class="btn btn-lg btn-primary btn-block mt-2" type="submit">ورود</button>
 </form>

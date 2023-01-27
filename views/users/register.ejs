@@ -1,7 +1,7 @@
 <form class="form-signin text-center" action="/register" method="post">
     <img class="mb-4" src="/img/blogger.png" alt="" width="72" height="72" />
-    <h1 class="h3 mb-3 font-weight-normal">ثبت نام کاربر</h1>
-    <%- include('../includes/messages.ejs') %> 
+    <h1 class="h3 mb-3 font-weight-normal">ثبت نام</h1>
+    <%- include('../includes/userMessages.ejs') %> 
     <label for="inputFullName" class="sr-only">نام و نام خانوادگی</label>
     <input
       type="text"
@@ -48,11 +48,9 @@
       required
     />
       <small id="repasswordErr" class="form-text text-danger text-left"><%= errors.find(e=>e.name == 'repassword')  ? errors.find(e=>e.name == 'repassword').message : '' %> </small>
-    <div class="checkbox mb-3">
-      <label>
-        <a href="/login">اکانت کاربری دارم</a>
-      </label>
-    </div>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">ثبت نام</button>
+   
+    <div class="g-recaptcha my-3" data-sitekey="6LeqpqkjAAAAAG_VvMDHr_kIdEK8kR0DcNUImDPy"></div>
+    <a href="/login">اکانت کاربری دارم</a>
+    <button class="btn btn-lg btn-primary btn-block mt-2" type="submit">ثبت نام</button>
   </form>
   

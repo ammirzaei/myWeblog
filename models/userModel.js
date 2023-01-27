@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
-const { registerSchema } = require('./schema/usersSchema');
+const { registerSchema, resetPasswordSchema } = require('./schema/usersSchema');
 
 const userSchema = new mongoose.Schema({
     fullName: {
@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
 userSchema.statics.userValidation = function (body) {
     return registerSchema.validate(body, { abortEarly: false });
 };
+
+userSchema.statics.resetPasswordValidation = function (body) {
+    return resetPasswordSchema.validate(body, { abortEarly: false });
+}
 
 userSchema.pre('save', async function (next) {
     const user = this;
