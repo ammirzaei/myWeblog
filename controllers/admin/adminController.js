@@ -39,7 +39,6 @@ module.exports.getDashboard = async (req, res) => {
                 .limit(blogPerPage);
         }
 
-
         const pagination = {
             currentPage: pageId,
             nextPage: pageId + 1,
@@ -48,6 +47,9 @@ module.exports.getDashboard = async (req, res) => {
             hasPreviousPage: pageId > 1,
             lastPage: Math.ceil(countBlogs / blogPerPage)
         };
+
+        // set header for clear backward
+        res.set('Cache-Control','no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
         res.render('admin/dashboard', {
             pageTitle: 'صفحه داشبورد',

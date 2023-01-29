@@ -11,14 +11,15 @@ module.exports.getLogin = (req, res) => {
     if (req.isAuthenticated())
         return res.redirect('/');
 
-    // console.log(req.headers.referer);
+    // set header for clear backward
+    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 
     res.render('users/login', {
         pageTitle: 'صفحه ورود',
         path: '/user',
         layout: './layouts/usersLayout',
         success: req.flash('Success'),
-        error: req.flash('Error'),
+        error: req.flash("Error"),
         redirect: req.query.redirect
     });
 }
@@ -37,7 +38,7 @@ module.exports.handleLogin = async (req, res, next) => {
             passport.authenticate('local', {
                 failureRedirect: '/login',
                 failureFlash: true,
-                successRedirect: urlLocal(urlRedirect) ? urlRedirect : ''
+                successRedirect: urlLocal(urlRedirect) ? urlRedirect : '/'
             })(req, res, next);
         } else {
             req.flash('Error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
@@ -80,6 +81,10 @@ module.exports.handleLogout = (req, res) => {
     req.session = null;
     req.logout((err) => {
         if (err) console.log(err);
+
+        // set header for clear backward
+        res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
+
         res.redirect('/');
     });
 }
