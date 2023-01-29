@@ -18,12 +18,27 @@ module.exports.getDashboard = async (req, res) => {
         const pageId = +req.query.pageId || 1; // aceess to the page id for paging
         const blogPerPage = 2; // limit blog
 
-        const countBlogs = await Blog.count({ user: req.user.id }); // get count blog user
+        const search = req.body.search;
 
-        const blogs = await Blog.find({
-            user: req.user.id
-        }).skip((pageId - 1) * blogPerPage)
-            .limit(blogPerPage);
+        let countBlogs;
+        let blogs;
+        if (search) {
+            countBlogs = await Blog.count({ user: req.user.id, $text: { $search: search } }); // get count blog user
+
+            blogs = await Blog.find({
+                user: req.user.id,
+                $text: { $search: search }
+            }).skip((pageId - 1) * blogPerPage)
+                .limit(blogPerPage);
+        } else {
+            countBlogs = await Blog.count({ user: req.user.id }); // get count blog user
+
+            blogs = await Blog.find({
+                user: req.user.id
+            }).skip((pageId - 1) * blogPerPage)
+                .limit(blogPerPage);
+        }
+
 
         const pagination = {
             currentPage: pageId,
