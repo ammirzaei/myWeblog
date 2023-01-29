@@ -16,4 +16,7 @@ router.post('/contact-us', homeController.handleContactUs);
 // Numeric Captcha
 router.get('/captcha.png', homeController.getCaptcha);
 
+// Searching
+router.post('/search', homeController.getHome);
+
 module.exports = router;

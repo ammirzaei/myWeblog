@@ -12,11 +12,21 @@ module.exports.getHome = async (req, res) => {
         const pageId = +req.query.pageId || 1;
         const blogPerPage = 2;
 
-        const countBlogs = await Blog.count({ status: 'عمومی'});
-        // get all blogs(desc)
-        const blogs = await Blog.find({ status: 'عمومی' }).sort({ createdAt: 'desc' })
-            .skip((pageId - 1) * blogPerPage)
-            .limit(blogPerPage);
+        let countBlogs;
+        let blogs;
+        if (search) {
+            countBlogs = await Blog.count({ status: 'عمومی', $text: { $search: search } });
+            // get all blogs(desc)
+            blogs = await Blog.find({ status: 'عمومی', $text: { $search: search } }).sort({ createdAt: 'desc' })
+                .skip((pageId - 1) * blogPerPage)
+                .limit(blogPerPage);
+        } else {
+            countBlogs = await Blog.count({ status: 'عمومی' });
+            // get all blogs(desc)
+            blogs = await Blog.find({ status: 'عمومی' }).sort({ createdAt: 'desc' })
+                .skip((pageId - 1) * blogPerPage)
+                .limit(blogPerPage);
+        }
 
         const pagination = {
             currentPage: pageId,

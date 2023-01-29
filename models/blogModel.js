@@ -40,6 +40,8 @@ const blogSchema = new mongoose.Schema({
     }
 });
 
+blogSchema.index({ title: 'text' });
+
 blogSchema.statics.postValidation = function (body) {
     return postValidationSchema.validate(body, { abortEarly: false });
 }
