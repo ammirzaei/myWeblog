@@ -3,6 +3,10 @@ exports.authenticated = (req, res, next) => {
         return next();
     }
 
-    req.flash('error','ابتدا باید با حساب خود وارد شوید');
-    res.redirect(`/login?redirect=${req.originalUrl}`);
+    req.flash('Error', 'ابتدا باید با حساب خود وارد شوید');
+    const url = req.originalUrl;
+    if (url === '/logout') {
+        return res.redirect('/');
+    }
+    res.redirect(`/login?redirect=${url}`);
 }
