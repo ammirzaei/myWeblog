@@ -14,6 +14,8 @@ module.exports.getHome = async (req, res) => {
 
         let countBlogs;
         let blogs;
+
+        const search = req.body.search;
         if (search) {
             countBlogs = await Blog.count({ status: 'عمومی', $text: { $search: search } });
             // get all blogs(desc)
