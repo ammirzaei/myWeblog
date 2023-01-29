@@ -32,7 +32,7 @@ module.exports.handleLogin = async (req, res, next) => {
             req.flash('Error', 'CAPTCHA را تایید کنید');
             return res.redirect('/login');
         }
-        if (reChaptcha(resRecaptcha, req.connection.remoteAddress)) {
+        if (reChaptcha(resRecaptcha, req.ip)) {
             const urlRedirect = req.body.redirect.trim();
             passport.authenticate('local', {
                 failureRedirect: '/login',
@@ -107,7 +107,7 @@ module.exports.postRegister = async (req, res) => {
             return res.redirect('/register');
         }
 
-        if (!reChaptcha(resRecaptcha, req.connection.remoteAddress)) {
+        if (!reChaptcha(resRecaptcha, req.ip)) {
             req.flash('Error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
             res.redirect('/register');
         }
@@ -208,7 +208,7 @@ exports.handleForgetPassword = async (req, res) => {
             return res.redirect('/forget-password');
         }
 
-        if (!reChaptcha(resRecaptcha, req.connection.remoteIp)) {
+        if (!reChaptcha(resRecaptcha, req.ip)) {
             req.flash('Error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
             return res.redirect('/forget-password');
         }
