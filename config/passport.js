@@ -9,7 +9,8 @@ passport.use(new Strategy({ usernameField : 'email' }, async (email, password, d
         const user = await User.findOne({ email });
         if (!user) {
             return done(null, false, {
-                message: 'کاربری با ایمیل وارد شده یافت نشد'
+                message: 'کاربری با ایمیل وارد شده یافت نشد',
+                type : 'Error'
             });
         }
 
@@ -17,7 +18,7 @@ passport.use(new Strategy({ usernameField : 'email' }, async (email, password, d
         if (isMatch) {
             return done(null, user); // req.user
         } else {
-            return done(null, false, { message: 'ایمیل یا رمز عبور صحیح نمی باشد' });
+            return done(null, false, { message: 'ایمیل یا رمز عبور صحیح نمی باشد' , type : 'Error'});
         }
     } catch (err) {
         console.log(err);
