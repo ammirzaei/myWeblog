@@ -1,5 +1,7 @@
 const Blog = require('../models/blogModel');
 const Contact = require('../models/contactModel');
+const { formatDate } = require('../utils/jalali');
+const { get500 } = require('./errorController');
 const captchapng = require('captchapng');
 
 let Captcha_Num;
@@ -16,6 +18,16 @@ module.exports.getHome = async (req, res) => {
     }
 }
 
+// Contact Us -- GET
+module.exports.getContactUs = (req, res) => {
+    res.render('home/contactUs', {
+        pageTitle: 'تماس با ما',
+        path: '/contact-us',
+        success: req.flash('Success'),
+        error: req.flash('Error'),
+        errors: []
+    });
+}
 
 // Contact Us -- POST
 exports.handleContactUs = async (req, res) => {
