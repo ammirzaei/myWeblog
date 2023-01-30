@@ -4,12 +4,14 @@ const router = new Router();
 const postController = require('../../controllers/admin/postController');
 
 // Add Post
+router.get('/add-post', postController.getAddPost);
 router.post('/add-post', postController.handleAddPost);
 
 /// Edit Post
-router.put('/edit-post/:id', postController.handleEditPost);
+router.get('/edit-post/:id', postController.getEditPost);
+router.post('/edit-post/:id', postController.handleEditPost);
 
 // Delet Post
-router.delete('/delete-post/:id' , postController.getDeletePost);
+router.get('/delete-post/:id' , postController.getDeletePost);
 
 module.exports = router;
