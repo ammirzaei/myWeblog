@@ -1,28 +1,8 @@
 const User = require('../models/userModel');
-const { get500, get404 } = require('./errorController');
 
-const fetch = require('node-fetch');
 const passport = require('passport');
 const urlLocal = require('url-local');
 const jwt = require('jsonwebtoken');
-
-// Login -- GET
-module.exports.getLogin = (req, res) => {
-    if (req.isAuthenticated())
-        return res.redirect('/');
-
-    // set header for clear backward
-    res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-
-    res.render('users/login', {
-        pageTitle: 'صفحه ورود',
-        path: '/user',
-        layout: './layouts/usersLayout',
-        success: req.flash('Success'),
-        error: req.flash("Error"),
-        redirect: req.query.redirect
-    });
-}
 
 // Login Handle -- POST
 module.exports.handleLogin = async (req, res, next) => {
@@ -89,18 +69,6 @@ module.exports.handleLogout = (req, res) => {
     });
 }
 
-// Register -- GET
-module.exports.getRegister = (req, res) => {
-    res.render('users/register', {
-        pageTitle: 'صفحه ثبت نام',
-        path: '/user',
-        layout: './layouts/usersLayout',
-        errors: [],
-        success: req.flash('Success'),
-        error: req.flash('Error')
-    });
-}
-
 // Register -- POST
 module.exports.postRegister = async (req, res) => {
     const errors = [];
@@ -136,7 +104,6 @@ module.exports.postRegister = async (req, res) => {
             });
         }
 
-        // const hash = await bcrypt.hash(password, 10);
         await User.create({
             fullName,
             email,
@@ -148,29 +115,6 @@ module.exports.postRegister = async (req, res) => {
         req.flash('Success', 'ثبت نام شما با موفقیت انجام شد');
         res.redirect('/login');
 
-
-        // bcrypt.genSalt(10, (err, salt) => {
-        //     if (err) throw err;
-        //     bcrypt.hash(password, salt, async (err, hash) => {
-        //         if (err) throw err;
-        //         await User.create({
-        //             fullName,
-        //             email,
-        //             password: hash
-        //         });
-        //         res.redirect('/login');
-        //     });
-        // });
-
-        // // database code
-        // const userN = new User({ // instance from user
-        //     fullName : req.body.fullName,
-        //     email : req.body.email,
-        //     password : req.body.password
-        // });
-        // await userN.save().then(()=>{
-        //     res.redirect('/login');
-        // });
     } catch (err) {
         err.inner.forEach(error => {
             errors.push({
@@ -188,19 +132,6 @@ module.exports.postRegister = async (req, res) => {
             error: req.flash('Error')
         });
     }
-}
-
-// Forget Password -- GET
-module.exports.getForgetPassword = (req, res) => {
-    if (req.isAuthenticated())
-        return res.redirect('/');
-
-    res.render('users/forgetPassword', {
-        pageTitle: 'فراموشی رمز عبور',
-        path: '/user',
-        success: req.flash('Success'),
-        error: req.flash('Error')
-    });
 }
 
 // Forget Password -- POST
