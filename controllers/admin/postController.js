@@ -2,22 +2,11 @@ const path = require('path');
 const fs = require('fs');
 
 const Blog = require('../../models/blogModel');
-const { get500, get404 } = require('../errorController');
 const rootDir = require('../../utils/rootDir');
 
 const shortId = require('shortid');
 const sharp = require('sharp');
 
-// Add Post -- GET
-module.exports.getAddPost = (req, res) => {
-    res.render('admin/posts/addPost', {
-        pageTitle: 'افزودن پست جدید',
-        path: '/dashboard/add-post',
-        layout: './layouts/adminLayout',
-        fullName: req.user.fullName,
-        errors: []
-    });
-}
 
 // Add Post Handler -- POST
 module.exports.handleAddPost = async (req, res) => {
@@ -74,32 +63,6 @@ module.exports.handleAddPost = async (req, res) => {
     }
 }
 
-// Edit Post -- GET
-module.exports.getEditPost = async (req, res) => {
-    try {
-        const blogId = req.params.id; // get blog id from url
-
-        const blog = await Blog.findById(blogId);
-        if (blog) {
-            if (blog.user == req.user.id) {
-                res.render('admin/posts/editPost', {
-                    pageTitle: 'ویرایش پست',
-                    path: '/dashboard/edit-post',
-                    layout: './layouts/adminLayout',
-                    fullName: req.user.fullName,
-                    blog,
-                    errors: []
-                });
-            } else
-                return res.redirect('/dashboard');
-        } else {
-            get404(req, res);
-        }
-    } catch (err) {
-        console.log(err);
-        get500(req, res);
-    }
-}
 
 // Edit Post Handler -- POSt
 module.exports.handleEditPost = async (req, res) => {

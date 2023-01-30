@@ -8,7 +8,6 @@ const MongoStore = require('connect-mongo');
 const fileUpload = require('express-fileupload');
 
 const connectDB = require('./config/db');
-const { setStatics } = require('./utils/statics');
 const { setRoutes } = require('./utils/routes');
 
 // config env
@@ -48,9 +47,6 @@ app.use(passport.session());
 
 // Flash
 app.use(flash()); // req.flash
-
-// Static
-setStatics(app);
 
 // Routes
 setRoutes(app);
