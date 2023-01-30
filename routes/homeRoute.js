@@ -4,7 +4,7 @@ const homeController = require('../controllers/homeController');
 
 const router = new Router();
 
-// Home
+// Home Page
 router.get('/', homeController.getHome);
 
 // Contact Us Page

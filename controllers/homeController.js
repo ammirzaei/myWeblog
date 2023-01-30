@@ -9,12 +9,46 @@ let Captcha_Num;
 // Home -- GET
 module.exports.getHome = async (req, res) => {
     try {
-        // get all blogs(desc)
-        const blogs = await Blog.find({ status: 'عمومی' }).sort({ createdAt: 'desc' });
+        const pageId = +req.query.pageId || 1;
+        const blogPerPage = 2;
 
-        res.status(200).json({ blogs, total: blogs.length });
+        let countBlogs;
+        let blogs;
+
+        const search = req.body.search;
+        if (search) {
+            countBlogs = await Blog.count({ status: 'عمومی', $text: { $search: search } });
+            // get all blogs(desc)
+            blogs = await Blog.find({ status: 'عمومی', $text: { $search: search } }).sort({ createdAt: 'desc' })
+                .skip((pageId - 1) * blogPerPage)
+                .limit(blogPerPage);
+        } else {
+            countBlogs = await Blog.count({ status: 'عمومی' });
+            // get all blogs(desc)
+            blogs = await Blog.find({ status: 'عمومی' }).sort({ createdAt: 'desc' })
+                .skip((pageId - 1) * blogPerPage)
+                .limit(blogPerPage);
+        }
+
+        const pagination = {
+            currentPage: pageId,
+            nextPage: pageId + 1,
+            previousPage: pageId - 1,
+            hasNextPage: (pageId * blogPerPage) < countBlogs,
+            hasPreviousPage: pageId > 1,
+            lastPage: Math.ceil(countBlogs / blogPerPage)
+        };
+
+        res.render('home/index', {
+            pageTitle: 'وبلاگ',
+            path: '/',
+            blogs,
+            formatDate,
+            pagination
+        });
     } catch (err) {
-        res.status(500).json({ error: err });
+        console.log(err);
+        get500(req, res);
     }
 }
 
@@ -31,8 +65,28 @@ module.exports.getContactUs = (req, res) => {
 
 // Contact Us -- POST
 exports.handleContactUs = async (req, res) => {
+    const errors = [];
 
     try {
+        const captcha = Number(req.body.captcha);
+        if (captcha) {
+            if (captcha !== Captcha_Num) {
+                errors.push({
+                    name: 'captcha',
+                    message: 'کد امنیتی صحیح نیست'
+                });
+
+                throw new Error();
+            }
+        }else {
+            errors.push({
+                name: 'captcha',
+                message: 'وارد کردن کد امنیتی اجباری است'
+            });
+
+            throw new Error();
+        }
+
         // model validation
         await Contact.contactValidation(req.body);
 
@@ -41,19 +95,29 @@ exports.handleContactUs = async (req, res) => {
             ipAddress: req.ip
         });
 
-        res.status(200).json({ message: 'created success' });
+        req.flash('Success', 'پیام شما با موفقیت ثبت شد');
+        res.redirect('/contact-us');
 
     } catch (err) {
-        const errors = [];
-
-        // errors validation
-        err.inner.forEach((error) => {
-            errors.push({
-                name: error.path,
-                message: error.message
+        if (errors.length === 0) {
+            // errors validation
+            err.inner.forEach((error) => {
+                errors.push({
+                    name: error.path,
+                    message: error.message
+                });
             });
+        }
+
+        Captcha_Num = Math.floor(Math.random() * 100000); // set number captcha
+
+        res.render('home/contactUs', {
+            pageTitle: 'تماس با ما',
+            path: '/contact-us',
+            success: req.flash('Success'),
+            error: req.flash('Error'),
+            errors
         });
-        res.status(422).json({ errors });
     }
 }
 

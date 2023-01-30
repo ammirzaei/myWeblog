@@ -75,5 +75,5 @@ setRoutes(app);
 
 // app Run
 app.listen(process.env.PORT, () => {
-    console.log(`app is Running in ${process.env.NODE_ENV}`)
+    debug(`app is Running in ${process.env.NODE_ENV}`)
 });
