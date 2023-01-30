@@ -9,6 +9,7 @@ const fileUpload = require('express-fileupload');
 
 const connectDB = require('./config/db');
 const { setRoutes } = require('./utils/routes');
+const {errorHandler} = require('./middlewares/error');
 
 // config env
 dotEnv.config({ path: './config/config.env' });
@@ -50,6 +51,9 @@ app.use(flash()); // req.flash
 
 // Routes
 setRoutes(app);
+
+// Error Handler
+app.use(errorHandler);
 
 // app Run
 app.listen(process.env.PORT, () => {
