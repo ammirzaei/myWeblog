@@ -11,5 +11,5 @@ module.exports.setRoutes = (app) => {
 
 
     // Handler Errors
-    app.use(require('../routes/errorRoute'))
+    // app.use(require('../routes/errorRoute'))
 }
