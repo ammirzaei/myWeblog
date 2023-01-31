@@ -5,21 +5,27 @@ const captchapng = require('captchapng');
 let Captcha_Num;
 
 // Home -- GET
-module.exports.getHome = async (req, res) => {
+module.exports.getHome = async (req, res, next) => {
     try {
         // get all blogs(desc)
         const blogs = await Blog.find({ status: 'عمومی' }).sort({ createdAt: 'desc' });
 
+        if (!blogs) {
+            const error = new Error('هیچ پستی وجود ندارد');
+            error.statusCode = 404;
+
+            throw error;
+        }
+
         res.status(200).json({ blogs, total: blogs.length });
     } catch (err) {
-        res.status(500).json({ error: err });
+        next(err);
     }
 }
 
 
 // Contact Us -- POST
-exports.handleContactUs = async (req, res) => {
-
+exports.handleContactUs = async (req, res, next) => {
     try {
         // model validation
         await Contact.contactValidation(req.body);
@@ -29,7 +35,7 @@ exports.handleContactUs = async (req, res) => {
             ipAddress: req.ip
         });
 
-        res.status(200).json({ message: 'created success' });
+        res.status(200).json({ message: 'پیام شما با موفقیت ثبت شد' });
 
     } catch (err) {
         const errors = [];
@@ -41,7 +47,11 @@ exports.handleContactUs = async (req, res) => {
                 message: error.message
             });
         });
-        res.status(422).json({ errors });
+        const error = new Error('اعتبارسنجی فیلد ها مشکل دارد');
+        error.statusCode = 422;
+        error.data = errors;
+
+        next(error);
     }
 }
 
