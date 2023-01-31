@@ -1,13 +1,42 @@
 const User = require('../models/userModel');
 
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 // Login Handle -- POST
 module.exports.handleLogin = async (req, res, next) => {
     try {
-      
-    } catch (error) {
-      
+        const { email, password } = req.body;
+
+        const user = await User.findOne({ email });
+        if (!user) {
+            const error = new Error('کاربری با ایمیل وارد شده یافت نشد');
+            error.statusCode = 404;
+
+            throw error;
+        }
+
+        const isEqual = await bcrypt.compare(password, user.password);
+        if (!isEqual) {
+            const error = new Error('ایمیل یا رمزعبور اشتباه است');
+            error.statusCode = 401;
+
+            throw error;
+        }
+
+        const token = jwt.sign({
+            user: {
+                userId: user.id,
+                email: user.email,
+                fullName: user.fullName
+            }
+        }, process.env.JWT_SECRET, {
+            expiresIn: '7d'
+        });
+
+        res.status(200).json({ token });
+    } catch (err) {
+        next(err);
     }
 };
 
