@@ -6,10 +6,7 @@ const { authenticated } = require('../middlewares/auth');
 const router = new Router();
 
 // Login Handle
-router.post('/login', userController.handleLogin, userController.handleRememberMe);
-
-// Logout Handle
-router.get('/logout', authenticated, userController.handleLogout);
+router.post('/login', userController.handleLogin);
 
 // Register Handle
 router.post('/register', userController.postRegister);

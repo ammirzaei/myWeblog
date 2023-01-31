@@ -1,32 +1,13 @@
 const User = require('../models/userModel');
 
-const passport = require('passport');
-const urlLocal = require('url-local');
 const jwt = require('jsonwebtoken');
 
 // Login Handle -- POST
 module.exports.handleLogin = async (req, res, next) => {
     try {
-        const resRecaptcha = req.body['g-recaptcha-response'];
-
-        if (!resRecaptcha) {
-            req.flash('Error', 'CAPTCHA را تایید کنید');
-            return res.redirect('/login');
-        }
-        if (reChaptcha(resRecaptcha, req.ip)) {
-            const urlRedirect = req.body.redirect.trim();
-            passport.authenticate('local', {
-                failureRedirect: '/login',
-                failureFlash: true,
-                successRedirect: urlLocal(urlRedirect) ? urlRedirect : '/'
-            })(req, res, next);
-        } else {
-            req.flash('Error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
-            res.redirect('/login');
-        }
+      
     } catch (error) {
-        console.log(error);
-        get500(req, res);
+      
     }
 };
 
@@ -43,30 +24,6 @@ async function reChaptcha(resRecaptcha, remoteIp) {
     });
     const resJson = await response.json();
     return resJson.success;
-}
-
-// RememberMe Handle -- POST
-exports.handleRememberMe = (req, res) => {
-    if (req.body.remember) {
-        req.session.cookie.originalMaxAge = (3600 * 1000) * 24 * 7; // 7 day
-    } else {
-        req.session.cookie.expire = null;
-    }
-
-    res.redirect('/dashboard');
-}
-
-// Logout Handle -- GET
-module.exports.handleLogout = (req, res) => {
-    req.session = null;
-    req.logout((err) => {
-        if (err) console.log(err);
-
-        // set header for clear backward
-        res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-
-        res.redirect('/');
-    });
 }
 
 // Register -- POST
