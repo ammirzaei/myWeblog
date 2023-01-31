@@ -10,6 +10,7 @@ const fileUpload = require('express-fileupload');
 const connectDB = require('./config/db');
 const { setRoutes } = require('./utils/routes');
 const {errorHandler} = require('./middlewares/error');
+const { setHeaders } = require('./middlewares/header');
 
 // config env
 dotEnv.config({ path: './config/config.env' });
@@ -26,6 +27,7 @@ const app = new express();
 // config body-parser
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(setHeaders);
 
 // use express-fileUpload
 app.use(fileUpload());  // req.files
