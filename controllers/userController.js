@@ -40,57 +40,25 @@ module.exports.handleLogin = async (req, res, next) => {
     }
 };
 
-// Get response in google recaptcha
-async function reChaptcha(resRecaptcha, remoteIp) {
-    const verify = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.CAPTCHA_SECRET}&response=${resRecaptcha}&remoteip=${remoteIp}`;
-
-    const response = await fetch(verify, {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-        }
-    });
-    const resJson = await response.json();
-    return resJson.success;
-}
 
 // Register -- POST
-module.exports.postRegister = async (req, res) => {
-    const errors = [];
+module.exports.postRegister = async (req, res, next) => {
     try {
-        const resRecaptcha = req.body['g-recaptcha-response']; // access to the recaptcha response
-
-        if (!resRecaptcha) {
-            req.flash('Error', 'CAPTCHA را تایید کنید');
-            return res.redirect('/register');
-        }
-
-        if (!reChaptcha(resRecaptcha, req.ip)) {
-            req.flash('Error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
-            res.redirect('/register');
-        }
-
         await User.userValidation(req.body);
         const { fullName, email, password } = req.body;
 
         const user = await User.findOne({ email });
         if (user) {
-            errors.push({
+            const error = new Error('ایمیل وارد شده تکراری است');
+            error.statusCode = 422;
+            error.data = {
                 name: 'email',
                 message: 'ایمیل وارد شده تکراری است'
-            });
-            return res.render('users/register', {
-                pageTitle: 'صفحه ثبت نام',
-                path: '/user',
-                layout: './layouts/usersLayout',
-                errors,
-                success: req.flash('Success'),
-                error: req.flash('Error')
-            });
+            };
+            return next(error);
         }
 
-        await User.create({
+        const newUser = await User.create({
             fullName,
             email,
             password
@@ -98,10 +66,11 @@ module.exports.postRegister = async (req, res) => {
 
         // send Email for welcome
 
-        req.flash('Success', 'ثبت نام شما با موفقیت انجام شد');
-        res.redirect('/login');
+        res.status(201).json({ message: 'کاربر جدید با موفقیت ثبت نام شد', userId: newUser.id });
 
     } catch (err) {
+        const errors = [];
+
         err.inner.forEach(error => {
             errors.push({
                 name: error.path,
@@ -109,14 +78,10 @@ module.exports.postRegister = async (req, res) => {
             });
         });
 
-        return res.render('users/register', {
-            pageTitle: 'صفحه ثبت نام',
-            path: '/user',
-            layout: './layouts/usersLayout',
-            errors,
-            success: req.flash('Success'),
-            error: req.flash('Error')
-        });
+        const error = new Error('در اعتبارسنجی فیلد ها مشکلی وجود دارد');
+        error.statusCode = 422;
+        error.data = errors;
+        next(error);
     }
 }
 
