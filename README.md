@@ -1,2 +1,2 @@
 # myWeblog
-این وبلاگ در هنگام یادگیری nodejs در حال توسعه یافتن است...
+This project developing using from REST API
