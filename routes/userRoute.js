@@ -14,10 +14,7 @@ router.post('/register', userController.postRegister);
 // Forget Password Handle
 router.post('/forget-password', userController.handleForgetPassword);
 
-// Reset Password Page
-router.get('/reset-password/:token', userController.getResetPassword);
-
 // Reset Password Handle
-router.post('/reset-password/:id', userController.handleResetPassword);
+router.post('/reset-password/:token', userController.handleResetPassword);
 
 module.exports = router;

@@ -86,20 +86,8 @@ module.exports.postRegister = async (req, res, next) => {
 }
 
 // Forget Password -- POST
-exports.handleForgetPassword = async (req, res) => {
+exports.handleForgetPassword = async (req, res, next) => {
     try {
-        const resRecaptcha = req.body['g-recaptcha-response']; // access to the recaptcha response
-
-        if (!resRecaptcha) {
-            req.flash('Error', 'CAPTCHA را تایید کنید');
-            return res.redirect('/forget-password');
-        }
-
-        if (!reChaptcha(resRecaptcha, req.ip)) {
-            req.flash('Error', 'اعتبارسنجی CAPTCHA موفقیت آمیز نبود');
-            return res.redirect('/forget-password');
-        }
-
         const { email } = req.body; // access to the email input
 
         const user = await User.findOne({ email }); // find user with email
@@ -108,71 +96,52 @@ exports.handleForgetPassword = async (req, res) => {
             // create token with jwt
             const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: '2h' });
 
-            const resetLink = `http://localhost:3000/reset-password/${token}`; // create resetlink
+            const resetLink = `${process.env.SITE_URL}/reset-password/${token}`; // create resetlink
 
             // send email to email user
             console.log(resetLink);
 
-            req.flash('Success', 'ایمیلی حاوی تغییر رمز عبور برای شما ارسال شد.');
-            res.redirect('/forget-password');
+            res.status(200).json({ message: 'ایمیلی حاوی لینک ریست رمز عبور برای شما ارسال شد' });
         } else {
-            req.flash('Error', 'کاربری با ایمیل وارد شده یافت نشد');
-            return res.redirect('/forget-password');
+            const error = new Error('کاربری با ایمیل وارد شده یافت نشد');
+            error.statusCode = 404;
+            throw error;
         }
 
     } catch (err) {
-        console.log(err);
-        get500(req, res);
-    }
-}
-
-// Reset Password -- GET
-module.exports.getResetPassword = async (req, res) => {
-    let decodedToken;
-    try {
-        const token = req.params.token; // access to the token
-
-        decodedToken = jwt.verify(token, process.env.JWT_SECRET); // auth token
-
-        res.render('users/resetPassword', {
-            pageTitle: 'ریست رمز عبور',
-            path: '/user',
-            success: req.flash('Success'),
-            error: req.flash('Error'),
-            userId: decodedToken.userId,
-            errors: []
-        });
-    } catch (err) {
-        if (!decodedToken) {
-            get404(req, res); // invalid token
-        }
-
-        console.log(err);
-        get500(req, res);
+        next(err);
     }
 }
 
 // Reset Password -- POST
-exports.handleResetPassword = async (req, res) => {
-    const userId = req.params.id; // access to the user id
-
+exports.handleResetPassword = async (req, res, next) => {
     try {
         await User.resetPasswordValidation(req.body); // validation
 
-        const user = await User.findById(userId); // find user
+        const token = req.params.token; // access to the token
 
-        if (!user)
-            get404(req, res);
+        const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
+        const user = await User.findById(decodedToken.userId); // find user
+        if (!user) {
+            const error = new Error('کاربری با توکن وارد شده یافت نشد');
+            error.statusCode = 404;
+            return next(error);
+        }
 
         user.password = req.body.password; // replace new password
         await user.save();
 
-        req.flash('Success', 'رمز عبور با موفقیت تغییر یافت');
-        res.redirect('/login');
+        res.status(200).json({ message: 'رمز عبور با موفقیت تغییر کرد' });
 
     } catch (err) {
-        const errors = [];
+        if (err.name === 'JsonWebTokenError') {
+            const error = new Error('توکن وارد شده معتبر نیست');
+            error.statusCode = 401;
+            return next(error);
+        }
 
+        const errors = [];
         err.inner.forEach((error) => {
             errors.push({
                 name: error.path,
@@ -180,13 +149,10 @@ exports.handleResetPassword = async (req, res) => {
             });
         });
 
-        res.render('users/resetPassword', {
-            pageTitle: 'ریست رمز عبور',
-            path: '/user',
-            errors,
-            success: req.flash('Success'),
-            error: req.flash('Error'),
-            userId
-        });
+        const error = new Error('در اعتبارسنجی فیلد ها مشکلی وجود دارد');
+        error.statusCode = 422;
+        error.data = errors;
+
+        next(error);
     }
 }
