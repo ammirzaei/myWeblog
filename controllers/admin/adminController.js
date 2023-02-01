@@ -3,12 +3,10 @@ const path = require('path');
 const sharp = require('sharp');
 const shortId = require('shortid');
 
-const Blog = require('../../models/blogModel');
 const rootDir = require('../../utils/rootDir');
 
-
 // Upload Image
-module.exports.uploadImage = async (req, res) => {
+module.exports.uploadImage = async (req, res, next) => {
     try {
         if (req.files) {
             const image = req.files.imageUpload; // access to the image upload
@@ -16,11 +14,15 @@ module.exports.uploadImage = async (req, res) => {
             // Validation
             // Size
             if (image.size > 4200000) {
-                return res.status(400).send('حجم عکس نباید بیشتر از 4 مگابایت باشد');
+                const error = new Error('حجم عکس نباید بیشتر از 4 مگابایت باشد');
+                error.statusCode = 422;
+                throw error;
             }
             // Type
             if (image.mimetype !== 'image/jpeg' && image.mimetype !== 'image/png') {
-                return res.status(400).send('تنها فرمت های JPEG و PNG را میتوانید آپلود کنید');
+                const error = new Error('تنها فرمت های JPEG و PNG را میتوانید آپلود کنید');
+                error.statusCode = 422;
+                throw error;
             }
 
             const imageName = shortId.generate() + path.extname(image.name);
@@ -30,17 +32,21 @@ module.exports.uploadImage = async (req, res) => {
             await sharp(image.data).jpeg({
                 quality: 50
             }).toFile(imagePath).catch((err) => {
-                res.status(400).send('در فرایند ذخیره عکس مشکلی رخ داد');
+                const error = new Error('در فرایند ذخیره عکس مشکلی رخ داد');
+                error.data = err;
+                throw error;
             });
 
             // create url image for send on header 
-            const url = `http://localhost:3000/uploads/img/${imageName}`;
+            const url = `${process.env.SITE_URL}/uploads/img/${imageName}`;
 
-            res.status(200).set('url', url).send('آپلود عکس با موفقیت انجام شد');
+            res.status(200).json({ message: 'آپلود عکس با موفقیت انجام شد', url });
         } else {
-            res.status(400).send('ابتدا عکسی انتخاب کنید');
+            const error = new Error('ابتدا عکسی انتخاب کنید');
+            error.statusCode = 422;
+            throw error;
         }
     } catch (err) {
-        res.status(400).send('در فرایند آپلود مشکلی رخ داد');
+        next(err);
     }
 }
