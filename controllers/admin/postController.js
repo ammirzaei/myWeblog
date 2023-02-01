@@ -9,7 +9,7 @@ const sharp = require('sharp');
 
 
 // Add Post Handler -- POST
-module.exports.handleAddPost = async (req, res) => {
+module.exports.handleAddPost = async (req, res, next) => {
     try {
         const image = req.files ? req.files.image : {};
 
@@ -22,14 +22,14 @@ module.exports.handleAddPost = async (req, res) => {
         const imageName = shortId.generate() + path.extname(image.name);
         const imagePath = `${rootDir}/public/uploads/blogs/${imageName}`;
 
-
         // compress image and saved
         await sharp(image.data).jpeg({
             quality: 50
         }).toFile(imagePath).catch((err) => {
             if (err) {
-                console.log(err);
-                get500(req, res);
+                const error = new Error('در فرآیند ذخیره سازی عکس مشکلی رخ داد');
+                error.data = err;
+                return next(error);
             }
         });
 
@@ -37,10 +37,10 @@ module.exports.handleAddPost = async (req, res) => {
         await Blog.create({
             ...req.body,
             image: imageName,
-            user: req.user.id
+            user: req.userId
         });
 
-        res.redirect('/dashboard');
+        res.status(201).json({ message: 'پست جدید با موفقیت ساخته شد' });
 
     } catch (err) {
         const errors = [];
@@ -53,13 +53,11 @@ module.exports.handleAddPost = async (req, res) => {
             });
         });
 
-        res.render('admin/posts/addPost', {
-            pageTitle: 'افزودن پست جدید',
-            path: '/dashboard/add-post',
-            layout: './layouts/adminLayout',
-            fullName: req.user.fullName,
-            errors
-        });
+        const error = new Error('در اعتبارسنجی فیلد ها مشکلی وجود دارد');
+        error.statusCode = 422;
+        error.data = errors;
+
+        next(error);
     }
 }
 
@@ -68,10 +66,12 @@ module.exports.handleAddPost = async (req, res) => {
 module.exports.handleEditPost = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
-        if (!blog)
-            get404(req, res);
+        if (!blog) {
+            const error = new Error("پستی با شناسه وارد شده یافت نشد");
+            error.statusCode = 404;
 
-        debugger;
+            throw error;
+        }
 
         const image = req.files ? req.files.image : {};
         if ("name" in image) {
@@ -86,8 +86,8 @@ module.exports.handleEditPost = async (req, res) => {
         }
 
         await Blog.postValidation(req.body); // validation with statics method mongoose
-        debugger;
-        if (blog.user == req.user.id) {
+
+        if (blog.user == req.userId) {
             const { title, status, body, shortDescription } = req.body; // access to the enterd edit blog
 
             // set a new value to the blog
@@ -104,16 +104,18 @@ module.exports.handleEditPost = async (req, res) => {
                 // deleted old image
                 fs.unlink(`${rootDir}/public/uploads/blogs/${blog.image}`, async (err) => {
                     if (err) {
-                        console.log(err);
-                        get500(req, res);
+                        const error = new Error('در فرآیند جایگزینی عکس جدید مشکلی رخ داد');
+                        error.data = err;
+                        throw error;
                     } else {
                         // compress image and saved new image
                         await sharp(image.data).jpeg({
                             quality: 50
                         }).toFile(imagePath).catch((err) => {
                             if (err) {
-                                console.log(err);
-                                get500(req, res);
+                                const error = new Error('در فرآیند ذخیره سازی عکس جدید مشکلی رخ داد');
+                                error.data = err;
+                                throw error;
                             }
                         });
                     }
@@ -125,68 +127,77 @@ module.exports.handleEditPost = async (req, res) => {
             // save new blog to the db
             await blog.save();
 
-            res.redirect('/dashboard');
-        } else
-            return res.redirect('/dashboard');
+            res.status(201).json({ message: 'پست با موفقیت ویرایش شد' });
+        } else {
+            const error = new Error('شما به این پست دسترسی ندارید');
+            error.statusCode = 401;
+            throw error;
+        }
     } catch (err) {
-        debugger;
+        if (err.inner) {
+            const errors = [];
 
-        const errors = [];
-
-        err.inner.forEach(error => {
-            errors.push({
-                name: error.path,
-                message: error.message
+            err.inner.forEach(error => {
+                errors.push({
+                    name: error.path,
+                    message: error.message
+                });
             });
-        });
 
-        res.render('admin/posts/editPost', {
-            pageTitle: 'ویرایش پست',
-            path: '/dashboard/edit-post',
-            layout: './layouts/adminLayout',
-            fullName: req.user.fullName,
-            blog,
-            errors
-        });
+            const error = new Error('در اعتبارسنجی فیلد ها مشکلی  وجود دارد');
+            error.statusCode = 422;
+            error.data = errors;
+
+            return next(error);
+        } else {
+            return next(err);
+        }
     }
 }
 
 // Delete Post -- GET
-module.exports.getDeletePost = async (req, res) => {
+module.exports.handleDeletePost = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id); // find blog with param id
 
-        if (blog.user != req.user.id)
-            return res.redirect('/dashboard');
-
         if (blog) {
+            if (blog.user != req.userId) {
+                const error = new Error('شما به این پست دسترسی ندارید');
+                error.statusCode = 401;
+                throw error;
+            }
+
             // deleted from db
             await Blog.findByIdAndDelete(req.params.id);
 
             const pathImage = `${rootDir}/public/uploads/blogs/${blog.image}`;
-            
+
             // check exist image on folder
             fs.access(pathImage, fs.constants.F_OK, (err) => {
                 if (!err) {
                     // deleted image file from folder
                     fs.unlink(pathImage, (err) => {
                         if (err) {
-                            console.log(err);
-                            get500(req, res);
+                            const error = new Error('در فرآیند حذف عکس مشکلی رخ داد');
+                            error.data = err;
+                            throw error;
                         }
                     });
                 } else {
-                    console.log(err);
-                    get500(req, res);
+                    const error = new Error('در فرآیند حذف عکس مشکلی رخ داد');
+                    error.data = err;
+                    throw error;
                 }
             });
 
-            res.redirect('/dashboard');
-        } else
-            get404(req, res);
+            res.status(201).json({ message: 'پست با موفقیت حذف شد' });
+        } else {
+            const error = new Error('پستی با شناسه وارد شده یافت نشد');
+            error.statusCode = 404;
+            throw error;
+        }
 
     } catch (err) {
-        console.log(err);
-        get500(req, res);
+        next(err);
     }
 }
