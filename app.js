@@ -9,6 +9,7 @@ const passport = require('passport');
 const MongoStore = require('connect-mongo');
 const debug = require('debug')('weblog');
 const fileUpload = require('express-fileupload');
+const helmet = require('helmet');
 
 const connectDB = require('./config/db');
 const { setStatics } = require('./utils/statics');
@@ -26,6 +27,9 @@ require('./config/passport');
 
 // initialize app
 const app = new express();
+
+// using helmet for toping security
+app.use(helmet());
 
 // Morgan Logger
 if (process.env.NODE_ENV === 'development') {
