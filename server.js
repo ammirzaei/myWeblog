@@ -1,6 +1,7 @@
 const express = require('express');
 const dotEnv = require('dotenv');
 const fileUpload = require('express-fileupload');
+const helmet = require('helmet');
 
 const connectDB = require('./config/db');
 const { setRoutes } = require('./utils/routes');
@@ -18,6 +19,9 @@ connectDB();
 
 // initialize app
 const app = new express();
+
+// using helmet for top security
+app.use(helmet());
 
 // use static
 app.use(express.static(path.join(rootDir, 'public')));
