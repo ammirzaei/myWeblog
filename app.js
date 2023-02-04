@@ -29,7 +29,7 @@ require('./config/passport');
 const app = new express();
 
 // using helmet for toping security
-app.use(helmet());
+// app.use(helmet());
 
 // Morgan Logger
 if (process.env.NODE_ENV === 'development') {
@@ -52,7 +52,7 @@ app.use(session({
     //     maxAge: null
     // },
     resave: false,
-    unset : 'destroy',
+    unset: 'destroy',
     saveUninitialized: false,
     store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }) // remember me
 }));
